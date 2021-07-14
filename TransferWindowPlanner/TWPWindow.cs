@@ -241,7 +241,7 @@ namespace TransferWindowPlanner
 
         //String strDepartureMinYear, strDepartureMinDay, strDepartureMaxYear, strDepartureMaxDay;
         internal KSPDateTime dateMinDeparture, dateMaxDeparture;
-        String strDepartureAltitude, strArrivalAltitude;
+        String strDepartureAltitude, strDepartureInclination, strArrivalAltitude;
         internal String strTravelMinDays, strTravelMaxDays;
 
         internal Vector2 vectMouse;
@@ -251,7 +251,6 @@ namespace TransferWindowPlanner
 
         internal Boolean ShowInstructions = true;
         internal Boolean ShowMinimized = false;
-        internal Boolean ShowEjectionDetails = false;
 
         internal override void DrawWindow(int id)
         {
@@ -404,14 +403,8 @@ namespace TransferWindowPlanner
             GUILayout.EndHorizontal();
         }
 
-        private Single EjectionDetailsYOffset;
-        private Rect DVEjectionRect;
         private void DrawTransferDetails()
         {
-            if (ShowEjectionDetails) {
-                GUI.Box(new Rect(10,EjectionDetailsYOffset,WindowRect.width - 20, 23),"");
-                //Styles.styleSettingsArea if needed
-            }
             ////Draw the selected position indicators
             //GUILayout.Space(mbTWP.windowDebug.intTest1);
             GUILayout.BeginHorizontal();
@@ -423,9 +416,7 @@ namespace TransferWindowPlanner
             GUILayout.BeginVertical();
             GUILayout.Label("Departure:", Styles.styleTextDetailsLabel);
             GUILayout.Label("Phase Angle:", Styles.styleTextDetailsLabel);
-            if (ShowEjectionDetails) {
-                GUILayout.Label(""); GUILayout.Label("    Ejection Heading:", Styles.styleTextDetailsLabel);
-            }
+            GUILayout.Label("Ejection LAN:", Styles.styleTextDetailsLabel);
             GUILayout.EndVertical();
             GUILayout.BeginVertical();
             GUILayout.BeginHorizontal();
@@ -440,10 +431,8 @@ namespace TransferWindowPlanner
             }
             GUILayout.EndHorizontal();
             GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.PhaseAngle * LambertSolver.Rad2Deg), Styles.styleTextYellow);
+            GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg), Styles.styleTextYellow);
             //GUILayout.Label("Phase Angle:", Styles.styleTextDetailsLabel);
-            if (ShowEjectionDetails) {
-                GUILayout.Label(""); GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.EjectionHeading * LambertSolver.Rad2Deg), Styles.styleTextYellow);
-            }
 
             //Action Buttons
             if (KACWrapper.APIReady)
@@ -484,9 +473,6 @@ namespace TransferWindowPlanner
             GUILayout.Label("Arrival:", Styles.styleTextDetailsLabel);
             GUILayout.Label("Ejection Angle:", Styles.styleTextDetailsLabel);
             GUILayout.Label("Ejection Inclination:", Styles.styleTextDetailsLabel);
-            if (ShowEjectionDetails) {
-                GUILayout.Label("Ejection Normal Δv:", Styles.styleTextDetailsLabel);
-            }
             if (TransferSpecs.FinalOrbitAltitude > 0) {
                 GUILayout.Label("Insertion Inclination:", Styles.styleTextDetailsLabel);
             }else {
@@ -499,9 +485,6 @@ namespace TransferWindowPlanner
             //GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.EjectionAngle * LambertSolver.Rad2Deg), Styles.styleTextYellow);
             GUILayout.Label(TransferSelected.EjectionAngleText, Styles.styleTextYellow);
             GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.EjectionInclination * LambertSolver.Rad2Deg), Styles.styleTextYellow);
-            if (ShowEjectionDetails) {
-                GUILayout.Label(String.Format("{0:0.0} m/s", TransferSelected.EjectionDVNormal), Styles.styleTextYellow);
-            }
             if (TransferSpecs.FinalOrbitAltitude > 0) {
                 GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.InsertionInclination * LambertSolver.Rad2Deg), Styles.styleTextYellow);
             }
@@ -511,9 +494,6 @@ namespace TransferWindowPlanner
             GUILayout.Label("Travel Time:", Styles.styleTextDetailsLabel);
             GUILayout.Label("Total Δv:", Styles.styleTextDetailsLabel);
             GUILayout.Label("Ejection Δv:", Styles.styleTextDetailsLabel);
-            if (ShowEjectionDetails) {
-                GUILayout.Label("Ejection Prograde Δv:", Styles.styleTextDetailsLabel);
-            }
 
             if (TransferSpecs.FinalOrbitAltitude > 0) {
                 GUILayout.Label("Insertion Δv:", Styles.styleTextDetailsLabel);
@@ -526,21 +506,7 @@ namespace TransferWindowPlanner
             GUILayout.Label(String.Format("{0:0} m/s", TransferSelected.DVTotal), Styles.styleTextYellow);
             GUILayout.BeginHorizontal();
             GUILayout.Label(String.Format("{0:0} m/s", TransferSelected.DVEjection), Styles.styleTextYellow);
-            if (Event.current.type == EventType.Repaint){
-                DVEjectionRect = GUILayoutUtility.GetLastRect();
-                EjectionDetailsYOffset = DVEjectionRect.y + 20;
-            }
-            if (DVEjectionRect!=null){
-                if (GUI.Button(new Rect(DVEjectionRect.x + DVEjectionRect.width-20, DVEjectionRect.y, 16, 16), new GUIContent(Resources.btnInfo, "Toggle Details..."), new GUIStyle()))
-                {
-                    ShowEjectionDetails = !ShowEjectionDetails;
-                    if (!ShowEjectionDetails) WindowRect.height = 400;
-                }
-            }
             GUILayout.EndHorizontal();
-            if (ShowEjectionDetails) {
-                GUILayout.Label(String.Format("{0:0.0} m/s", TransferSelected.EjectionDVPrograde), Styles.styleTextYellow);
-            }
             if (TransferSpecs.FinalOrbitAltitude > 0) {
                 GUILayout.Label(String.Format("{0:0} m/s", TransferSelected.DVInjection), Styles.styleTextYellow);
             }
@@ -570,10 +536,8 @@ namespace TransferWindowPlanner
             //Message = Message.AppendLine("Ejection Angle: {0:0.00}°", TransferSelected.EjectionAngle * LambertSolver.Rad2Deg);
             Message = Message.AppendLine("Ejection Angle: {0}", TransferSelected.EjectionAngleText);
             Message = Message.AppendLine("Ejection Inc.:  {0:0.00}°", TransferSelected.EjectionInclination * LambertSolver.Rad2Deg);
+            Message = Message.AppendLine("Ejection LAN:   {0:0.00}°", TransferSelected.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg);
             Message = Message.AppendLine("Ejection Δv:    {0:0} m/s", TransferSelected.DVEjection);
-            Message = Message.AppendLine("Prograde Δv:    {0:0.0} m/s", TransferSelected.EjectionDVPrograde);
-            Message = Message.AppendLine("Normal Δv:      {0:0.0} m/s", TransferSelected.EjectionDVNormal);
-            Message = Message.AppendLine("Heading:        {0:0.00}°", TransferSelected.EjectionHeading * LambertSolver.Rad2Deg);
             Message = Message.AppendLine("Insertion Inc.: {0:0.00}°", TransferSelected.InsertionInclination * LambertSolver.Rad2Deg);
             Message = Message.AppendLine("Insertion Δv:   {0:0} m/s", TransferSelected.DVInjection);
             Message = Message.AppendLine("Total Δv:       {0:0} m/s", TransferSelected.DVTotal);
@@ -678,7 +642,7 @@ namespace TransferWindowPlanner
         {
             GUILayout.Label("Instructions:", Styles.styleTextYellowBold);
             DrawSingleInstruction("1.","Select the celestial body you will be departing from.");
-            DrawSingleInstruction("2.","Enter the altitude of your parking orbit around that body. This is assumed to be a circular, equatorial orbit.");
+            DrawSingleInstruction("2.","Enter the altitude and inclination of your parking orbit around that body. This is assumed to be a circular orbit. Depending on the selected transfer, the actual inclination of the parking orbit may have to be higher than this; make sure to check this in the full details.");
             DrawSingleInstruction("3.","Select the celestial body you wish to travel to.");
             DrawSingleInstruction("4.", "Enter the altitude of the orbit you wish to establish around your destination body. You can enter 0 if you intend to perform a fly-by or aerobraking maneuver.");
             //DrawSingleInstruction("4.", "Enter the altitude of the orbit you wish to establish around your destination body. You may check the \"No insertion burn\" checkbox instead if you intend to perform a fly-by or aerobraking maneuver.");
@@ -718,8 +682,10 @@ namespace TransferWindowPlanner
             ddlOrigin.DrawButton();
 
             GUILayout.BeginHorizontal();
-            DrawTextField(ref strDepartureAltitude, "[^\\d\\.]+", true, FieldWidth: 172);
+            DrawTextField(ref strDepartureAltitude, "[^\\d\\.]+", true, FieldWidth: 76);
             GUILayout.Label("km", GUILayout.Width(20));
+            DrawTextField(ref strDepartureInclination, "[^\\d\\.]+", true, FieldWidth: 76);
+            GUILayout.Label("°", GUILayout.Width(20));
             GUILayout.EndHorizontal();
 
             ddlDestination.DrawButton();
@@ -758,7 +724,6 @@ namespace TransferWindowPlanner
                 mbTWP.windowSettings.Visible = false;
                 StartWorker();
                 WindowRect.height = 400;
-                ShowEjectionDetails = false;
             }
             GUILayout.EndHorizontal();
 

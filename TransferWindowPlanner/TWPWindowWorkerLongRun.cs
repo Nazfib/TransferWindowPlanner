@@ -140,7 +140,6 @@ namespace TransferWindowPlanner
 
             mbTWP.windowSettings.Visible = false;
             WindowRect.height = 400;
-            ShowEjectionDetails = false;
 
             LogFormatted("Starting new Run of {0} Plots", lstPlots.Count);
 
@@ -166,6 +165,7 @@ namespace TransferWindowPlanner
 
             strArrivalAltitude = "0";
             strDepartureAltitude = "0";
+
             dateMinDeparture = new KSPDateTime(lstPlots[CurrentPlot].DepMinYear, 1,3,0,0,0);
             dateMaxDeparture = new KSPDateTime(lstPlots[CurrentPlot].DepMaxYear, 1,3,0,0,0).AddDays(-1);
             strTravelMinDays = lstPlots[CurrentPlot].TravelMin;
@@ -254,7 +254,7 @@ namespace TransferWindowPlanner
                         //Set the Value for this position to be the DeltaV of this Transfer
                         DeltaVs[iCurrent] = LambertSolver.TransferDeltaV(cbOrigin, cbDestination,
                             DepartureMin + ((Double)x * xResolution), TravelMax - ((Double)y * yResolution),
-                            InitialOrbitAltitude, FinalOrbitAltitude, out transferTemp);
+                            InitialOrbitAltitude, InitialOrbitInclination, FinalOrbitAltitude, out transferTemp);
 
                         //LogFormatted("dt: {0}  TT:{1}", TravelMax - ((Double)y * yResolution), transferTemp.TravelTime);
 
