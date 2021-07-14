@@ -59,7 +59,7 @@ public static class LambertSolver
     /// <param name="initialOrbitAltitude">The altitude of the initial circular parking orbit. If 0, parking orbit ejection is ignored. Must be greater than or equal to 0.</param>
     /// <param name="initialOrbitInclination">The minimum inclination of the initial circular parking orbit. Must be between 0 and 90.</param>
     /// <param name="finalOrbitAltitude">(Optional) The altitude of the final circular orbit. Must be greater than or equal to 0 if provided.</param>
-    public static double TransferDeltaV(CelestialBody origin, CelestialBody destination, double ut, double dt, double initialOrbitAltitude, double initialOrbitInclination, double? finalOrbitAltitude)
+    public static TransferDeltaVInfo TransferDeltaV(CelestialBody origin, CelestialBody destination, double ut, double dt, double initialOrbitAltitude, double initialOrbitInclination, double? finalOrbitAltitude)
     {
         TransferDetails tmp;
         return TransferDeltaV(origin, destination, ut, dt, initialOrbitAltitude, initialOrbitInclination, finalOrbitAltitude, out tmp);
@@ -85,7 +85,7 @@ public static class LambertSolver
     /// <param name="initialOrbitInclination">The minimum inclination of the initial circular parking orbit. Must be between 0 and 90.</param>
     /// <param name="finalOrbitAltitude">(Optional) The altitude of the final circular orbit. Must be greater than or equal to 0 if provided.</param>
     /// <param name="oTransfer">Output object that contains all the basic details of the calculated transfer</param>
-    public static double TransferDeltaV(CelestialBody origin, CelestialBody destination, double ut, double dt, double initialOrbitAltitude, double initialOrbitInclination, double? finalOrbitAltitude, out TransferDetails oTransfer)
+    public static TransferDeltaVInfo TransferDeltaV(CelestialBody origin, CelestialBody destination, double ut, double dt, double initialOrbitAltitude, double initialOrbitInclination, double? finalOrbitAltitude, out TransferDetails oTransfer)
     {
         double gravParameter = origin.referenceBody.gravParameter;
         double tA = origin.orbit.TrueAnomalyAtUT(ut);
@@ -120,7 +120,7 @@ public static class LambertSolver
 
             if (ap > 0 && ap <= rsoi) { 
                 oTransfer = null;                                   //Nuke this if we have no result
-                return Double.NaN; // There is no orbit that leaves the SoI with a velocity of ejectionDeltaV
+                return new TransferDeltaVInfo(Double.NaN, Double.NaN); // There is no orbit that leaves the SoI with a velocity of ejectionDeltaV
             }
             ejectionDeltaV = v1 - v0;
 
@@ -188,7 +188,7 @@ public static class LambertSolver
 
         }
 
-        return oTransfer.DVTotal; //ejectionDeltaV + insertionDeltaV;
+        return new TransferDeltaVInfo(oTransfer.DVEjection, oTransfer.DVInjection);
     }
 
 	/// <summary>

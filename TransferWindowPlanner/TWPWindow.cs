@@ -615,7 +615,9 @@ namespace TransferWindowPlanner
 
                     Int32 iCurrent = (Int32)((vectMouse.y - PlotPosition.y) * PlotWidth + (vectMouse.x - PlotPosition.x));
 
-                    GUI.Label(new Rect(vectMouse.x + 5, vectMouse.y - 20, 80, 15), String.Format("{0:0}m/s", DeltaVs[iCurrent]), SkinsLibrary.CurrentTooltip);
+                    GUI.Label(new Rect(vectMouse.x + 5, vectMouse.y - 50, 100, 45),
+                        String.Format("Eject: {0:0}m/s\nInsert: {1:0}m/s\nTotal: {2:0}m/s", DeltaVs[iCurrent].Eject, DeltaVs[iCurrent].Insert, DeltaVs[iCurrent].Total),
+                        SkinsLibrary.CurrentTooltip);
 
                     if (Event.current.type == EventType.MouseDown && Event.current.button == 0) {
                         vectSelected = new Vector2(vectMouse.x, vectMouse.y);

@@ -271,15 +271,15 @@ namespace TransferWindowPlanner
                         /////////////// Long Running ////////////////////////////
                         //LogFormatted("{0}x{1} ({3}) = {2:0}", x, y, DeltaVs[iCurrent],iCurrent);
 
-                        if (DeltaVs[iCurrent] > maxDeltaV)
-                            maxDeltaV = DeltaVs[iCurrent];
-                        if (DeltaVs[iCurrent] < minDeltaV)
+                        if (DeltaVs[iCurrent].Total > maxDeltaV)
+                            maxDeltaV = DeltaVs[iCurrent].Total;
+                        if (DeltaVs[iCurrent].Total < minDeltaV)
                         {
-                            minDeltaV = DeltaVs[iCurrent];
+                            minDeltaV = DeltaVs[iCurrent].Total;
                             minDeltaVPoint = new Vector2(x, y);
                         }
 
-                        logDeltaV = Math.Log(DeltaVs[iCurrent]);
+                        logDeltaV = Math.Log(DeltaVs[iCurrent].Total);
                         sumlogDeltaV += logDeltaV;
                         sumSqLogDeltaV += logDeltaV * logDeltaV;
 

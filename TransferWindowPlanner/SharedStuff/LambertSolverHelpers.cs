@@ -10,6 +10,19 @@ using KSPPluginFramework;
 
 namespace TransferWindowPlanner
 {
+    public struct TransferDeltaVInfo
+    {
+        public TransferDeltaVInfo(double eject, double insert)
+        {
+            Eject = eject;
+            Insert = insert;
+        }
+
+        public double Eject { get; set; }
+        public double Insert { get; set; }
+        public double Total { get { return this.Eject + this.Insert; } }
+    }
+
     public class TransferDetails
     {
         public TransferDetails(CelestialBody origin, CelestialBody destination, Double ut, Double dt)
