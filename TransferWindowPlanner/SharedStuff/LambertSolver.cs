@@ -134,8 +134,15 @@ public static class LambertSolver
                 ejectionLan = a_inf - (0.5 * Math.PI  * Math.Sign(d_inf));
                 ejectionInclination = Math.Abs(d_inf);
             }
-            // Convert LAN to 0-2pi
-            ejectionLan %= (2 * Math.PI);
+
+            // Make sure LAN is in the range [0, 2pi).
+            // Since we know that a_inf is between -pi and +pi (line 129), and the arcsin on line 131 is between -0.5pi and +0.5pi (alternatively,
+            // the value added at line 134 is either -0.5pi or +0.5pi), ejectionLan is between -1.5pi and +1.5pi at this point. Therefore, we only
+            // need to check for the case where ejectionLan < 0 and add 2pi to it to get it into the proper range.
+            if (ejectionLan < 0)
+            {
+                ejectionLan += 2 * Math.PI;
+            }
         }
 
         //Create a transfer object and set all the details we have
