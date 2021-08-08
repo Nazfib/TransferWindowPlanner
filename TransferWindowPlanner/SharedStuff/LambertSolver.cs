@@ -124,10 +124,13 @@ public static class LambertSolver
             }
             ejectionDeltaV = v1 - v0;
 
+            // Determine declination and right ascension of the ejection vector
+            double d_inf = 0.5 * Math.PI - Vector3.Angle(Planetarium.up, ejectionDeltaVector) * Deg2Rad;
+            double a_inf = Vector3.SignedAngle(Planetarium.right, Vector3.ProjectOnPlane(ejectionDeltaVector, Planetarium.up), Planetarium.up) * Deg2Rad;
+
             // Calculate inclination and LAN of the parking orbit
-            double d_inf = ejectionDeltaVector.z / ejectionDeltaVector.magnitude;
-            double a_inf = Math.Atan2(ejectionDeltaVector.y, ejectionDeltaVector.x);
-            if (initialOrbitInclination > Math.Abs(d_inf)) {
+            if (initialOrbitInclination > Math.Abs(d_inf))
+            {
                 ejectionLan = a_inf - Math.Asin(Math.Tan(d_inf) / Math.Tan(initialOrbitInclination));
                 ejectionInclination = initialOrbitInclination;
             } else {
