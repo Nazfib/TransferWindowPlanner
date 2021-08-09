@@ -125,7 +125,7 @@ public static class LambertSolver
             ejectionDeltaV = v1 - v0;
 
             // Calculate inclination and LAN of the parking orbit
-            double d_inf = ejectionDeltaVector.z / ejectionDeltaVector.magnitude;
+            double d_inf = Math.Asin(ejectionDeltaVector.z / ejectionDeltaVector.magnitude);
             double a_inf = Math.Atan2(ejectionDeltaVector.y, ejectionDeltaVector.x);
             if (initialOrbitInclination > Math.Abs(d_inf)) {
                 ejectionLan = a_inf - Math.Asin(Math.Tan(d_inf) / Math.Tan(initialOrbitInclination));
