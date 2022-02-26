@@ -36,22 +36,35 @@
   <PropertyGroup>
     <KSPDir>..\..\_Versions\1.10.1</KSPDir>
   </PropertyGroup>
-  <PropertyGroup>
-    <AdditionalLibPaths>$(KSPDir)\KSP_Data\Managed</AdditionalLibPaths>
-  </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Assembly-CSharp" />
-    <Reference Include="UnityEngine" />
-    <Reference Include="UnityEngine.AnimationModule" />
-    <Reference Include="UnityEngine.CoreModule" />
-    <Reference Include="UnityEngine.ImageConversionModule" />
-    <Reference Include="UnityEngine.IMGUIModule" />
-    <Reference Include="UnityEngine.TextRenderingModule" />
-    <Reference Include="UnityEngine.UnityWebRequestWWWModule" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine" >
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FrameworkExt\Extensions.cs" />
@@ -108,14 +121,7 @@
     <ItemGroup>
       <PluginFiles Include="..\PluginFiles\GameData\**\*.*" />
     </ItemGroup>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="@(PluginFiles)"
-      DestinationFiles="@(PluginFiles -> '$(KSPDir)\GameData\%(RecursiveDir)%(Filename)%(Extension)')"
-    />
-    <Copy
-     SourceFiles="$(TargetPath)"
-     DestinationFolder="$(KSPDir)\GameData\TriggerTech\$(ProjectName)"
-    />
+    <Copy SkipUnchangedFiles="true" SourceFiles="@(PluginFiles)" DestinationFiles="@(PluginFiles -> '$(KSPDir)\GameData\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(KSPDir)\GameData\TriggerTech\$(ProjectName)" />
   </Target>
 </Project>

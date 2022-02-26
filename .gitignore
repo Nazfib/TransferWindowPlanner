@@ -8,6 +8,8 @@
 
 .vs/
 
+**/.idea
+
 # Build results
 
 [Dd]ebug/
