@@ -27,6 +27,9 @@ LICENSE
 This work is licensed under an MIT license as outlined at the OSI site. Visit the documentation site for more details and Attribution
 
 VERSION HISTORY
+Version 1.8.0.1     -   KSP Version: 1.10.1
+- [Nazfib] Remove logging from the background thread, hopefully fixes the crashes
+
 Version 1.8.0.0     -   KSP Version: 1.10.1
 - [Nazfib] Recompile for KSP 1.10
 - [Nazfib] Calculate ejection plane inclination and LAN, instead of assuming equatorial

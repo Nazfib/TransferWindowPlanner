@@ -213,7 +213,7 @@ namespace TransferWindowPlanner
                 }
                 catch (Exception ex) { LogFormatted("Unable to delete file:{0}", ex.Message); }
 #endif
-                LogFormatted("Generating DeltaV Values");
+                //LogFormatted("Generating DeltaV Values");
                 for (int x = 0; x < PlotWidth; x++)
                 {
 #if DEBUG
@@ -270,7 +270,7 @@ namespace TransferWindowPlanner
                 Double mean, stddev;
 
                 //Calculate the ColorIndex for the plot - BUT DONT AFFECT TEXTURES ON THE BW THREAD
-                LogFormatted("Working out Log Values to determine DeltaV->Color Mapping");
+                //LogFormatted("Working out Log Values to determine DeltaV->Color Mapping");
 
                 logMinDeltaV = Math.Log(minDeltaV);
                 mean = sumlogDeltaV / DeltaVs.Length;
@@ -280,7 +280,7 @@ namespace TransferWindowPlanner
                 if (DeltaVColorPalette == null)
                     GenerateDeltaVPalette();
 
-                LogFormatted("Placing ColorIndexes in array");
+                //LogFormatted("Placing ColorIndexes in array");
                 for (int y = 0; y < PlotHeight; y++)
                 {
                     for (int x = 0; x < PlotWidth; x++)
@@ -308,7 +308,7 @@ namespace TransferWindowPlanner
             }
             catch (Exception ex)
             {
-                LogFormatted("ERROR: Background Worker Failed\r\n{0}\r\n{1}", ex.Message, ex.StackTrace);
+                //LogFormatted("ERROR: Background Worker Failed\r\n{0}\r\n{1}", ex.Message, ex.StackTrace);
             }
         }
 
@@ -381,7 +381,7 @@ namespace TransferWindowPlanner
 
         private void GenerateDeltaVPalette()
         {
-            LogFormatted("Generating DeltaV Color Palette");
+            //LogFormatted("Generating DeltaV Color Palette");
             DeltaVColorPalette = new List<Color>();
             for (int i = 64; i <= 68; i++)
                 DeltaVColorPalette.Add(new Color32(64, (byte)i, 255, 255));

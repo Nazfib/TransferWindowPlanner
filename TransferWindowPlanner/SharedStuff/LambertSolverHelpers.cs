@@ -164,7 +164,7 @@ namespace TransferWindowPlanner
             theta += Math.Asin(v1 * initialOrbitRadius / (vsoi * rsoi));
             EjectionAngle = EjectionAngleCalc(EjectionDeltaVector, theta, OriginVelocity.normalized);
 
-            MonoBehaviourExtended.LogFormatted("{0}",EjectionAngle);
+            //MonoBehaviourExtended.LogFormatted("{0}",EjectionAngle);
 
             if (Destination.orbit.semiMajorAxis < Origin.orbit.semiMajorAxis)
             {
