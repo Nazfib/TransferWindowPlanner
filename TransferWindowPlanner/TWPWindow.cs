@@ -118,8 +118,14 @@ namespace TransferWindowPlanner
                 mbTWP.PhaseAngle.HideAngle();
                 mbTWP.EjectAngle.HideAngle();
             }
+            if (mbTWP.ParkingOrbit != null)
+            {
+                mbTWP.ParkingOrbit.Cleanup();
+                mbTWP.ParkingOrbit = null;
+            }
             blnDisplayPhase = false;
             blnDisplayEject = false;
+            blnDisplayParkingOrbit = false;
         }
 
         internal override void OnGUIOnceOnly()
@@ -774,6 +780,24 @@ namespace TransferWindowPlanner
                             mbTWP.EjectAngle.HideAngle();
                         }
                     }
+
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                    if (DrawToggle(ref blnDisplayParkingOrbit, "Show Parking Orbit in map view", "ButtonToggle"))
+                    {
+                        if (blnDisplayParkingOrbit)
+                        {
+                            mbTWP.ParkingOrbit = ParkingOrbitRenderer.Setup(cbOrigin,
+                                InitialOrbitAltitude,
+                                TransferSelected.EjectionInclination * LambertSolver.Rad2Deg,
+                                TransferSelected.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg);
+                        }
+                        else
+                        {
+                            mbTWP.ParkingOrbit.Cleanup();
+                            mbTWP.ParkingOrbit = null;
+                        }
+                    }
                 }
                 GUILayout.EndHorizontal();
             }
@@ -781,6 +805,9 @@ namespace TransferWindowPlanner
 
         private Boolean blnDisplayPhase = false;
         private Boolean blnDisplayEject = false;
+        private Boolean blnDisplayParkingOrbit = false;
+
+
 
         internal void ResetWindow()
         {

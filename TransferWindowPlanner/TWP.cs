@@ -37,6 +37,7 @@ namespace TransferWindowPlanner
 
         internal AngleRenderPhase PhaseAngle;
         internal AngleRenderEject2 EjectAngle;
+        internal ParkingOrbitRenderer ParkingOrbit;
 
         internal static List<GameScenes> lstScenesForAngles = new List<GameScenes>() { GameScenes.TRACKSTATION, GameScenes.FLIGHT };
 
@@ -128,6 +129,10 @@ namespace TransferWindowPlanner
             if (EjectAngle != null)
             {
                 Destroy(EjectAngle);
+            }
+            if (ParkingOrbit != null)
+            {
+                ParkingOrbit.Cleanup();
             }
 
             GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
