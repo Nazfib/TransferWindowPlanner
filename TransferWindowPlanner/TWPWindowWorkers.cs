@@ -24,6 +24,7 @@ namespace TransferWindowPlanner
         Double TravelMin, TravelMax, TravelRange;
 
         Double InitialOrbitAltitude = 100000, FinalOrbitAltitude = 100000;
+        Double InitialOrbitInclination = 0;
 
         void SetupDestinationControls()
         {
@@ -87,6 +88,7 @@ namespace TransferWindowPlanner
 
             strArrivalAltitude = (FinalOrbitAltitude / 1000).ToString();
             strDepartureAltitude = (InitialOrbitAltitude / 1000).ToString();
+            strDepartureInclination = (InitialOrbitInclination * LambertSolver.Rad2Deg).ToString();
         }
 
         internal Boolean Running = false;
@@ -124,6 +126,7 @@ namespace TransferWindowPlanner
             TravelRange = TravelMax - TravelMin;
             TravelSelected = -1;
             InitialOrbitAltitude = Convert.ToDouble(strDepartureAltitude) * 1000;
+            InitialOrbitInclination = Convert.ToDouble(strDepartureInclination) * LambertSolver.Deg2Rad;
             if (blnFlyby)
                 FinalOrbitAltitude = 0;
             else
@@ -146,7 +149,7 @@ namespace TransferWindowPlanner
             xResolution = DepartureRange / (PlotWidth - 1);
             yResolution = TravelRange / (PlotHeight - 1);
 
-            DeltaVs = new Double[PlotWidth * PlotHeight];
+            DeltaVs = new TransferDeltaVInfo[PlotWidth * PlotHeight];
             DeltaVsColorIndex = new Int32[PlotWidth * PlotHeight];
         }
 
@@ -177,7 +180,7 @@ namespace TransferWindowPlanner
         internal Int32 PlotWidth = 292, PlotHeight = 292;
         Double xResolution, yResolution;
 
-        Double[] DeltaVs;
+        TransferDeltaVInfo[] DeltaVs;
         Int32[] DeltaVsColorIndex;
 
         Texture2D texPlotArea=null, texDeltaVPalette=null;
@@ -225,27 +228,29 @@ namespace TransferWindowPlanner
                         //Set the Value for this position to be the DeltaV of this Transfer
                         DeltaVs[iCurrent] = LambertSolver.TransferDeltaV(cbOrigin, cbDestination,
                             DepartureMin + ((Double)x * xResolution), TravelMax - ((Double)y * yResolution),
-                            InitialOrbitAltitude, FinalOrbitAltitude);
+                            InitialOrbitAltitude, InitialOrbitInclination, FinalOrbitAltitude);
+                        double dvTotal = DeltaVs[iCurrent].Total;
 
                         //LogFormatted("dt: {0}  TT:{1}", TravelMax - ((Double)y * yResolution), transferTemp.TravelTime);
+
 #if DEBUG
-                        strCSVLine += String.Format("{0:0.00},", DeltaVs[iCurrent]);
+                        strCSVLine += string.Format("{0:0.00},", dvTotal);
 #endif
                         /////////////// Long Running ////////////////////////////
                         //LogFormatted("{0}x{1} ({3}) = {2:0}", x, y, DeltaVs[iCurrent],iCurrent);
 
-                        if (!Double.IsNaN(DeltaVs[iCurrent]))
+                        if (!double.IsNaN(dvTotal))
                         {
-                            if (DeltaVs[iCurrent] > maxDeltaV)
-                                maxDeltaV = DeltaVs[iCurrent];
+                            if (dvTotal > maxDeltaV)
+                                maxDeltaV = dvTotal;
 
-                            if (DeltaVs[iCurrent] < minDeltaV)
+                            if (dvTotal < minDeltaV)
                             {
-                                minDeltaV = DeltaVs[iCurrent];
+                                minDeltaV = dvTotal;
                                 minDeltaVPoint = new Vector2(x, y);
                             }
 
-                            logDeltaV = Math.Log(DeltaVs[iCurrent]);
+                            logDeltaV = Math.Log(dvTotal);
                             sumlogDeltaV += logDeltaV;
                             sumSqLogDeltaV += logDeltaV * logDeltaV;
                         }
@@ -281,13 +286,14 @@ namespace TransferWindowPlanner
                     for (int x = 0; x < PlotWidth; x++)
                     {
                         iCurrent = (Int32)(y * PlotWidth + x);
-                        if (Double.IsNaN(DeltaVs[iCurrent]))
+                        double dvTotal = DeltaVs[iCurrent].Total;
+                        if (double.IsNaN(dvTotal))
                         {
                             DeltaVsColorIndex[iCurrent] = -1;
                         }
                         else
                         {
-                            logDeltaV = Math.Log(DeltaVs[iCurrent]);
+                            logDeltaV = Math.Log(dvTotal);
                             double relativeDeltaV = (logDeltaV - logMinDeltaV) / (logMaxDeltaV - logMinDeltaV);
                             Int32 ColorIndex = Math.Min((Int32)(Math.Floor(relativeDeltaV * DeltaVColorPalette.Count)), DeltaVColorPalette.Count - 1);
 
@@ -311,7 +317,7 @@ namespace TransferWindowPlanner
             DepartureSelected = DepartureMin + (vectSelected.x - PlotPosition.x) * xResolution;
             TravelSelected = TravelMax - (vectSelected.y - PlotPosition.y) * yResolution;
 
-            LambertSolver.TransferDeltaV(cbOrigin, cbDestination, DepartureSelected, TravelSelected, InitialOrbitAltitude, FinalOrbitAltitude, out TransferSelected);
+            LambertSolver.TransferDeltaV(cbOrigin, cbDestination, DepartureSelected, TravelSelected, InitialOrbitAltitude, InitialOrbitInclination, FinalOrbitAltitude, out TransferSelected);
             if (TransferSelected != null)
             {
                 //Only if its not a NaN

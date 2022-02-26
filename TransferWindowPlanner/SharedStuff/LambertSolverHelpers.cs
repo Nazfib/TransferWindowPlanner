@@ -10,6 +10,19 @@ using KSPPluginFramework;
 
 namespace TransferWindowPlanner
 {
+    public struct TransferDeltaVInfo
+    {
+        public TransferDeltaVInfo(double eject, double insert)
+        {
+            Eject = eject;
+            Insert = insert;
+        }
+
+        public double Eject { get; set; }
+        public double Insert { get; set; }
+        public double Total { get { return this.Eject + this.Insert; } }
+    }
+
     public class TransferDetails
     {
         public TransferDetails(CelestialBody origin, CelestialBody destination, Double ut, Double dt)
@@ -95,32 +108,25 @@ namespace TransferWindowPlanner
         public Double TransferAngle { get; set; }
 
         /// <summary>
-        /// Angle above Origin orbit plane we are doing the Ejection burn at
+        /// Inclination of the escape orbit (and thus the parking orbit)
         /// </summary>
         public Double EjectionInclination { get; set; }
+
+        /// <summary>
+        /// Longitude of the ascending node of the escape orbit (and thus the parking orbit)
+        /// </summary>
+        public Double EjectionLongitudeOfAscendingNode { get; set; }
+
         /// <summary>
         /// Angle above Transfer orbit plane we are doing the injection burn at
         /// </summary>
         public Double InsertionInclination { get; set; }
-
 
         /// <summary>
         /// Velocity Vector for Ejection - Basically Diff between Transfer Orbit and Planet Orbit velocities
         /// </summary>
         public Vector3d EjectionVector { get { return TransferInitalVelocity - OriginVelocity; } }
 
-        /// <summary>
-        /// m/s of velocity required in the Normal direction
-        /// </summary>
-        public Double EjectionDVNormal { get; set; }
-        /// <summary>
-        /// m/s of velocity required in the Prograde direction
-        /// </summary>
-        public Double EjectionDVPrograde { get; set; }
-        /// <summary>
-        /// Heading of the craft in radians
-        /// </summary>
-        public Double EjectionHeading { get; set; }
         /// <summary>
         /// Ejection angle of the burn in radians - angle from orbit velocity vector
         /// </summary>
@@ -150,9 +156,6 @@ namespace TransferWindowPlanner
             Double rsoi = Origin.sphereOfInfluence;
             Double vsoi = EjectionVector.magnitude;
             Double v1 = Math.Sqrt(vsoi * vsoi + 2 * OriginVesselOrbitalSpeed * OriginVesselOrbitalSpeed - 2 * mu / rsoi);
-            EjectionDVNormal = v1 * Math.Sin(EjectionInclination);
-            EjectionDVPrograde = v1 * Math.Cos(EjectionInclination) - OriginVesselOrbitalSpeed;
-            EjectionHeading = Math.Atan2(EjectionDVPrograde, EjectionDVNormal);
 
             Double initialOrbitRadius = mu / (OriginVesselOrbitalSpeed * OriginVesselOrbitalSpeed);
             Double e = initialOrbitRadius * v1 * v1 / mu - 1;
@@ -264,10 +267,8 @@ namespace TransferWindowPlanner
                 //Message = Message.AppendLine("Ejection Angle: {0:0.00}°", this.EjectionAngle * LambertSolver.Rad2Deg);
                 Message = Message.AppendLine("Ejection Angle: {0}", this.EjectionAngleText);
                 Message = Message.AppendLine("Ejection Inc.:  {0:0.00}°", this.EjectionInclination * LambertSolver.Rad2Deg);
+                Message = Message.AppendLine("Ejection LAN:   {0:0.00}°", this.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg);
                 Message = Message.AppendLine("Ejection Δv:    {0:0} m/s", this.DVEjection);
-                Message = Message.AppendLine("Prograde Δv:    {0:0.0} m/s", this.EjectionDVPrograde);
-                Message = Message.AppendLine("Normal Δv:      {0:0.0} m/s", this.EjectionDVNormal);
-                Message = Message.AppendLine("Heading:        {0:0.00}°", this.EjectionHeading * LambertSolver.Rad2Deg);
                 Message = Message.AppendLine("Insertion Inc.: {0:0.00}°", this.InsertionInclination * LambertSolver.Rad2Deg);
                 Message = Message.AppendLine("Insertion Δv:   {0:0} m/s", this.DVInjection);
                 Message = Message.AppendLine("Total Δv:       {0:0} m/s", this.DVTotal);

@@ -27,6 +27,11 @@ LICENSE
 This work is licensed under an MIT license as outlined at the OSI site. Visit the documentation site for more details and Attribution
 
 VERSION HISTORY
+Version 1.8.0.0     -   KSP Version: 1.10.1
+- [Nazfib] Recompile for KSP 1.10
+- [Nazfib] Calculate ejection plane inclination and LAN, instead of assuming equatorial
+- [Nazfib] Display ejection and insertion dV separately in tooltip
+
 Version 1.7.2.0		-	KSP Version: 1.7.3
 - Fix issue with camera being destroyed when leaving TS/map mode
 

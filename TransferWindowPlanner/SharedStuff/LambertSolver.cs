@@ -47,8 +47,9 @@ public static class LambertSolver
     /// <summary>
     /// Find the delta-v required for a ballistic transfer from <paramref name="origin"/> to <paramref name="destination"/>,
     /// departing at <paramref name="ut"/> UT, with a time of flight of <paramref name="dt"/> seconds, starting from a circular
-    /// parking orbit <paramref name="initialOrbitAltitude"/> meters above the origin's surface, and optionally inserting into a
-    /// final orbit <paramref name="finalOrbitAltitude"/> meters above the destination's surface.
+    /// parking orbit <paramref name="initialOrbitAltitude"/> meters above the origin's surface at an inclination no less than
+    /// <paramref name="initialOrbitInclination"/> degrees, and optionally inserting into a final orbit
+    /// <paramref name="finalOrbitAltitude"/> meters above the destination's surface.
     /// </summary>
     /// <returns>The total delta-v in meters per second of the specified transfer.</returns>
     /// <param name="origin">The origin body.</param>
@@ -56,10 +57,12 @@ public static class LambertSolver
     /// <param name="ut">The universal time of departure, in seconds. Must be greater than 0.</param>
     /// <param name="dt">The time of flight, in seconds. Must be greater than 0.</param>
     /// <param name="initialOrbitAltitude">The altitude of the initial circular parking orbit. If 0, parking orbit ejection is ignored. Must be greater than or equal to 0.</param>
-    public static double TransferDeltaV(CelestialBody origin, CelestialBody destination, double ut, double dt, double initialOrbitAltitude, double? finalOrbitAltitude)
+    /// <param name="initialOrbitInclination">The minimum inclination of the initial circular parking orbit. Must be between 0 and 90.</param>
+    /// <param name="finalOrbitAltitude">(Optional) The altitude of the final circular orbit. Must be greater than or equal to 0 if provided.</param>
+    public static TransferDeltaVInfo TransferDeltaV(CelestialBody origin, CelestialBody destination, double ut, double dt, double initialOrbitAltitude, double initialOrbitInclination, double? finalOrbitAltitude)
     {
         TransferDetails tmp;
-        return TransferDeltaV(origin, destination, ut, dt, initialOrbitAltitude, finalOrbitAltitude, out tmp);
+        return TransferDeltaV(origin, destination, ut, dt, initialOrbitAltitude, initialOrbitInclination, finalOrbitAltitude, out tmp);
     }
 
 
@@ -69,8 +72,9 @@ public static class LambertSolver
     /// <summary>
     /// Find the delta-v required for a ballistic transfer from <paramref name="origin"/> to <paramref name="destination"/>,
     /// departing at <paramref name="ut"/> UT, with a time of flight of <paramref name="dt"/> seconds, starting from a circular
-    /// parking orbit <paramref name="initialOrbitAltitude"/> meters above the origin's surface, and optionally inserting into a
-    /// final orbit <paramref name="finalOrbitAltitude"/> meters above the destination's surface.
+    /// parking orbit <paramref name="initialOrbitAltitude"/> meters above the origin's surface at an inclination no less than
+    /// <paramref name="initialOrbitInclination"/> degrees, and optionally inserting into a final orbit
+    /// <paramref name="finalOrbitAltitude"/> meters above the destination's surface.
     /// </summary>
     /// <returns>The total delta-v in meters per second of the specified transfer.</returns>
     /// <param name="origin">The origin body.</param>
@@ -78,9 +82,10 @@ public static class LambertSolver
     /// <param name="ut">The universal time of departure, in seconds. Must be greater than 0.</param>
     /// <param name="dt">The time of flight, in seconds. Must be greater than 0.</param>
     /// <param name="initialOrbitAltitude">The altitude of the initial circular parking orbit. If 0, parking orbit ejection is ignored. Must be greater than or equal to 0.</param>
+    /// <param name="initialOrbitInclination">The minimum inclination of the initial circular parking orbit. Must be between 0 and 90.</param>
     /// <param name="finalOrbitAltitude">(Optional) The altitude of the final circular orbit. Must be greater than or equal to 0 if provided.</param>
     /// <param name="oTransfer">Output object that contains all the basic details of the calculated transfer</param>
-    public static double TransferDeltaV(CelestialBody origin, CelestialBody destination, double ut, double dt, double initialOrbitAltitude, double? finalOrbitAltitude, out TransferDetails oTransfer)
+    public static TransferDeltaVInfo TransferDeltaV(CelestialBody origin, CelestialBody destination, double ut, double dt, double initialOrbitAltitude, double initialOrbitInclination, double? finalOrbitAltitude, out TransferDetails oTransfer)
     {
         double gravParameter = origin.referenceBody.gravParameter;
         double tA = origin.orbit.TrueAnomalyAtUT(ut);
@@ -97,7 +102,7 @@ public static class LambertSolver
         Vector3d velocityAfterEjection = Solve(gravParameter, originPositionAtDeparture, destinationPositionAtArrival, dt, longWay, out velocityBeforeInsertion);
 
         Vector3d ejectionDeltaVector = velocityAfterEjection - originVelocity;
-        double ejectionInclination = 0, vesselOriginOrbitalSpeed = 0;     //Extra variables for Transfer Details
+        double ejectionInclination = 0, ejectionLan = 0, vesselOriginOrbitalSpeed = 0;     //Extra variables for Transfer Details
         double ejectionDeltaV = ejectionDeltaVector.magnitude;
         if (initialOrbitAltitude > 0) {
             double mu = origin.gravParameter;
@@ -115,15 +120,28 @@ public static class LambertSolver
 
             if (ap > 0 && ap <= rsoi) { 
                 oTransfer = null;                                   //Nuke this if we have no result
-                return Double.NaN; // There is no orbit that leaves the SoI with a velocity of ejectionDeltaV
+                return new TransferDeltaVInfo(Double.NaN, Double.NaN); // There is no orbit that leaves the SoI with a velocity of ejectionDeltaV
+            }
+            ejectionDeltaV = v1 - v0;
+
+            // Calculate inclination and LAN of the parking orbit
+            double d_inf = Math.Asin(ejectionDeltaVector.z / ejectionDeltaVector.magnitude);
+            double a_inf = Math.Atan2(ejectionDeltaVector.y, ejectionDeltaVector.x);
+            if (initialOrbitInclination > Math.Abs(d_inf)) {
+                ejectionLan = a_inf - Math.Asin(Math.Tan(d_inf) / Math.Tan(initialOrbitInclination));
+                ejectionInclination = initialOrbitInclination;
+            } else {
+                ejectionLan = a_inf - (0.5 * Math.PI  * Math.Sign(d_inf));
+                ejectionInclination = Math.Abs(d_inf);
             }
 
-            if (ejectionDeltaVector.z != 0) {
-                double sinEjectionInclination = ejectionDeltaVector.z / ejectionDeltaV;
-                ejectionInclination = Math.Asin(sinEjectionInclination);    //Store this for later
-                ejectionDeltaV = Math.Sqrt(v0 * v0 + v1 * v1 - 2 * v0 * v1 * Math.Sqrt(1 - sinEjectionInclination * sinEjectionInclination));
-            } else {
-                ejectionDeltaV = v1 - v0;
+            // Make sure LAN is in the range [0, 2pi).
+            // Since we know that a_inf is between -pi and +pi (line 129), and the arcsin on line 131 is between -0.5pi and +0.5pi (alternatively,
+            // the value added at line 134 is either -0.5pi or +0.5pi), ejectionLan is between -1.5pi and +1.5pi at this point. Therefore, we only
+            // need to check for the case where ejectionLan < 0 and add 2pi to it to get it into the proper range.
+            if (ejectionLan < 0)
+            {
+                ejectionLan += 2 * Math.PI;
             }
         }
 
@@ -138,6 +156,7 @@ public static class LambertSolver
         //reset the magnitude of the ejectionDeltaV to take into account the orbital velocity of the craft
         oTransfer.EjectionDeltaVector = oTransfer.EjectionDeltaVector.normalized * ejectionDeltaV;
         oTransfer.EjectionInclination = ejectionInclination;
+        oTransfer.EjectionLongitudeOfAscendingNode = ejectionLan;
 
         double insertionDeltaV = 0;
         double insertionInclination = 0, vesselDestinationOrbitalSpeed = 0;     //Extra variables for Transfer Details
@@ -176,7 +195,7 @@ public static class LambertSolver
 
         }
 
-        return oTransfer.DVTotal; //ejectionDeltaV + insertionDeltaV;
+        return new TransferDeltaVInfo(oTransfer.DVEjection, oTransfer.DVInjection);
     }
 
 	/// <summary>
