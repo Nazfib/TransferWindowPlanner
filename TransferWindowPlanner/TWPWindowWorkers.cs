@@ -321,12 +321,11 @@ namespace TransferWindowPlanner
             if (TransferSelected != null)
             {
                 //Only if its not a NaN
-                TransferSelected.CalcEjectionValues();
 
                 if (TransferWindowPlanner.lstScenesForAngles.Contains(HighLogic.LoadedScene))
                 {
-                    mbTWP.EjectAngle.AngleTargetValue = TransferSelected.EjectionAngle * LambertSolver.Rad2Deg;
-                    mbTWP.EjectAngle.DrawToRetrograde = TransferSelected.EjectionAngleIsRetrograde;
+                    mbTWP.EjectAngle.AsymptoteDirection = TransferSelected.EjectionVector;
+                    mbTWP.EjectAngle.PeriapsisDirection = TransferSelected.PeriDirection;
                     mbTWP.PhaseAngle.AngleTargetValue = TransferSelected.PhaseAngle * LambertSolver.Rad2Deg;
                     if (!mbTWP.PhaseAngle.ShowTargetAngle)
                         mbTWP.PhaseAngle.ShowTargetAngle = true;

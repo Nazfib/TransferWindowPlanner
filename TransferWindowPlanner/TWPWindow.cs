@@ -482,8 +482,7 @@ namespace TransferWindowPlanner
             GUILayout.BeginVertical();
             //GUILayout.Label(String.Format("{0:0}", KSPTime.PrintDate(new KSPTime(TransferSelected.DepartureTime + TransferSelected.TravelTime), KSPTime.PrintTimeFormat.DateTimeString)), Styles.styleTextYellow);
             GUILayout.Label(new KSPDateTime(TransferSelected.DepartureTime + TransferSelected.TravelTime).ToStringStandard(DateStringFormatsEnum.DateTimeFormat), Styles.styleTextYellow);
-            //GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.EjectionAngle * LambertSolver.Rad2Deg), Styles.styleTextYellow);
-            GUILayout.Label(TransferSelected.EjectionAngleText, Styles.styleTextYellow);
+            GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.EjectionAngle * LambertSolver.Rad2Deg), Styles.styleTextYellow);
             GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.EjectionInclination * LambertSolver.Rad2Deg), Styles.styleTextYellow);
             if (TransferSpecs.FinalOrbitAltitude > 0) {
                 GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.InsertionInclination * LambertSolver.Rad2Deg), Styles.styleTextYellow);
@@ -533,8 +532,7 @@ namespace TransferWindowPlanner
             Message = Message.AppendLine("Arrive at:      {0}", new KSPDateTime(TransferSelected.DepartureTime + TransferSelected.TravelTime).ToStringStandard(DateStringFormatsEnum.DateTimeFormat));
             Message = Message.AppendLine("       UT:      {0:0}", TransferSelected.DepartureTime + TransferSelected.TravelTime);
             Message = Message.AppendLine("Phase Angle:    {0:0.00}°", TransferSelected.PhaseAngle * LambertSolver.Rad2Deg);
-            //Message = Message.AppendLine("Ejection Angle: {0:0.00}°", TransferSelected.EjectionAngle * LambertSolver.Rad2Deg);
-            Message = Message.AppendLine("Ejection Angle: {0}", TransferSelected.EjectionAngleText);
+            Message = Message.AppendLine("Ejection Angle: {0:0.00}°", TransferSelected.EjectionAngle * LambertSolver.Rad2Deg);
             Message = Message.AppendLine("Ejection Inc.:  {0:0.00}°", TransferSelected.EjectionInclination * LambertSolver.Rad2Deg);
             Message = Message.AppendLine("Ejection LAN:   {0:0.00}°", TransferSelected.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg);
             Message = Message.AppendLine("Ejection Δv:    {0:0} m/s", TransferSelected.DVEjection);
@@ -769,7 +767,7 @@ namespace TransferWindowPlanner
                         {
                             blnDisplayPhase = false;
                             mbTWP.PhaseAngle.HideAngle();
-                            mbTWP.EjectAngle.DrawAngle(cbOrigin,TransferSelected.EjectionAngle * LambertSolver.Rad2Deg,TransferSelected.EjectionAngleIsRetrograde);
+                            mbTWP.EjectAngle.DrawAngle(cbOrigin,TransferSelected.EjectionVector, TransferSelected.PeriDirection);
                         }
                         else
                         {

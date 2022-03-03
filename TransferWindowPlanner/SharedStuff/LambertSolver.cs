@@ -104,6 +104,9 @@ public static class LambertSolver
         Vector3d ejectionDeltaVector = velocityAfterEjection - originVelocity;
         double ejectionInclination = 0, ejectionLan = 0, vesselOriginOrbitalSpeed = 0;     //Extra variables for Transfer Details
         double ejectionDeltaV = ejectionDeltaVector.magnitude;
+        Vector3d periDirection = Vector3d.zero;
+        double ejectionAngle = 0;
+
         if (initialOrbitAltitude > 0) {
             double mu = origin.gravParameter;
             double r0 = initialOrbitAltitude + origin.Radius;
@@ -143,6 +146,14 @@ public static class LambertSolver
             {
                 ejectionLan += 2 * Math.PI;
             }
+
+            // Find the direction of the periapsis
+            ejectionAngle = Math.Acos(-1 / e);
+            Vector3d normal = new Vector3d(
+	            Math.Sin(ejectionLan) * Math.Sin(ejectionInclination),
+	            -Math.Cos(ejectionLan) * Math.Sin(ejectionInclination),
+	            Math.Cos(ejectionInclination));
+            periDirection = PeriapsisDirection(ejectionDeltaVector, -1/e, normal);
         }
 
         //Create a transfer object and set all the details we have
@@ -152,11 +163,11 @@ public static class LambertSolver
         oTransfer.TransferInitalVelocity = velocityAfterEjection;
         oTransfer.TransferFinalVelocity = velocityBeforeInsertion;
         oTransfer.TransferAngle = Math.Acos(Vector3d.Dot(originPositionAtDeparture, destinationPositionAtArrival) / (originPositionAtDeparture.magnitude * destinationPositionAtArrival.magnitude));
-        oTransfer.EjectionDeltaVector = ejectionDeltaVector;
-        //reset the magnitude of the ejectionDeltaV to take into account the orbital velocity of the craft
-        oTransfer.EjectionDeltaVector = oTransfer.EjectionDeltaVector.normalized * ejectionDeltaV;
+        oTransfer.DVEjection = ejectionDeltaV;
         oTransfer.EjectionInclination = ejectionInclination;
         oTransfer.EjectionLongitudeOfAscendingNode = ejectionLan;
+        oTransfer.EjectionAngle = ejectionAngle;
+        oTransfer.PeriDirection = periDirection;
 
         double insertionDeltaV = 0;
         double insertionInclination = 0, vesselDestinationOrbitalSpeed = 0;     //Extra variables for Transfer Details
@@ -178,8 +189,7 @@ public static class LambertSolver
                 //Store away the extra details about the Destination/Injection
                 oTransfer.DestinationVesselOrbitalSpeed = vesselDestinationOrbitalSpeed;
                 oTransfer.DestinationVelocity = destinationVelocity;
-                //oTransfer.InjectionDeltaVector = (velocityBeforeInsertion - destinationVelocity);
-                oTransfer.InjectionDeltaVector = oTransfer.EjectionDeltaVector.normalized * insertionDeltaV;
+                oTransfer.DVInjection = insertionDeltaV;
                 oTransfer.InsertionInclination = insertionInclination;
             }
             else
@@ -188,11 +198,9 @@ public static class LambertSolver
                 //Store away the extra details about the Destination/Injection
                 oTransfer.DestinationVesselOrbitalSpeed = velocityBeforeInsertion.magnitude;
                 oTransfer.DestinationVelocity = destinationVelocity;
-                oTransfer.InjectionDeltaVector = new Vector3d();
+                oTransfer.DVInjection = 0;
                 oTransfer.InsertionInclination = 0;
             }
-
-
         }
 
         return new TransferDeltaVInfo(oTransfer.DVEjection, oTransfer.DVInjection);
@@ -732,9 +740,14 @@ public static class LambertSolver
 			}
 		}
 	}
-	
-	private static Vector3d HyperbolicEjectionAngle(Vector3d vsoi, double cosTrueAnomaly, Vector3d normal)
+
+	private static Vector3d PeriapsisDirection(Vector3d vsoi, double cosTrueAnomaly, Vector3d normal)
 	{
+		// This was "HyperbolicEjectionAngle". It calculates the direction of the periapsis, given
+		// - the velocity after escape (asymptote of the hyperbola)
+		// - the cosine of the angle between the asymptote and the periapsis
+		// - a vector, normal to the plane.
+
 		vsoi = vsoi.normalized;
 
 		// We have three equations of three unknowns (v.x, v.y, v.z):
@@ -864,4 +877,3 @@ public static class LambertSolver
 
 
 }
-

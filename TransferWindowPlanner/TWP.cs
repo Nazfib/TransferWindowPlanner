@@ -36,7 +36,7 @@ namespace TransferWindowPlanner
         internal TWPWindowSettingsBlockout windowSettingsBlockoutExtra;
 
         internal AngleRenderPhase PhaseAngle;
-        internal AngleRenderEject EjectAngle;
+        internal AngleRenderEject2 EjectAngle;
 
         internal static List<GameScenes> lstScenesForAngles = new List<GameScenes>() { GameScenes.TRACKSTATION, GameScenes.FLIGHT };
 
@@ -103,7 +103,7 @@ namespace TransferWindowPlanner
             if (lstScenesForAngles.Contains(HighLogic.LoadedScene))
             {
                 PhaseAngle = MapView.MapCamera.gameObject.AddComponent<AngleRenderPhase>();
-                EjectAngle = MapView.MapCamera.gameObject.AddComponent<AngleRenderEject>();
+                EjectAngle = MapView.MapCamera.gameObject.AddComponent<AngleRenderEject2>();
             }
 
             //do the daily version check if required

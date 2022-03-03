@@ -79,22 +79,13 @@ namespace TransferWindowPlanner
         public Double DestinationVesselOrbitalSpeed { get; set; }
 
         /// <summary>
-        /// Velocity of the Ejection Burn
-        /// </summary>
-        public Vector3d EjectionDeltaVector { get; set; }
-        /// <summary>
-        /// Velocity of the Injection Burn
-        /// </summary>
-        public Vector3d InjectionDeltaVector { get; set; }
-
-        /// <summary>
         /// Magnitude of the Ejection Burn
         /// </summary>
-        public double DVEjection { get { return EjectionDeltaVector.magnitude; } }
+        public double DVEjection { get; set; }
         /// <summary>
         /// Magnitude of the Injection Burn
         /// </summary>
-        public double DVInjection { get { return InjectionDeltaVector.magnitude; } }
+        public double DVInjection { get; set; }
         /// <summary>
         /// Magnitude of all burns
         /// </summary>
@@ -118,7 +109,7 @@ namespace TransferWindowPlanner
         public Double EjectionLongitudeOfAscendingNode { get; set; }
 
         /// <summary>
-        /// Angle above Transfer orbit plane we are doing the injection burn at
+        /// Minimum reachable inclination of the insertion orbit at the target
         /// </summary>
         public Double InsertionInclination { get; set; }
 
@@ -128,102 +119,14 @@ namespace TransferWindowPlanner
         public Vector3d EjectionVector { get { return TransferInitalVelocity - OriginVelocity; } }
 
         /// <summary>
-        /// Ejection angle of the burn in radians - angle from orbit velocity vector
+        /// Angle between periapsis and the asymptote of the escape orbit
         /// </summary>
         public Double EjectionAngle { get; set; }
 
-        public Boolean EjectionAngleIsRetrograde { get; set; }
-        public String EjectionAngleText
-        {
-            get
-            {
-                String strret = String.Format("{0:0.00}°", EjectionAngle * LambertSolver.Rad2Deg);
-                if (EjectionAngleIsRetrograde)
-                    strret += " to retrograde";
-                else
-                    strret += " to prograde";
-
-                return strret;
-            }
-        }
-
         /// <summary>
-        /// This calculates the details of the Ejection Angles for the Eject burn
+        /// Unit vector in the direction of the periapsis of the departure orbit
         /// </summary>
-        public void CalcEjectionValues()
-        {
-            Double mu = Origin.gravParameter;
-            Double rsoi = Origin.sphereOfInfluence;
-            Double vsoi = EjectionVector.magnitude;
-            Double v1 = Math.Sqrt(vsoi * vsoi + 2 * OriginVesselOrbitalSpeed * OriginVesselOrbitalSpeed - 2 * mu / rsoi);
-
-            Double initialOrbitRadius = mu / (OriginVesselOrbitalSpeed * OriginVesselOrbitalSpeed);
-            Double e = initialOrbitRadius * v1 * v1 / mu - 1;
-            Double a = initialOrbitRadius / (1 - e);
-            Double theta = Math.Acos((a * (1 - e * e) - rsoi) / (e * rsoi));
-            theta += Math.Asin(v1 * initialOrbitRadius / (vsoi * rsoi));
-            EjectionAngle = EjectionAngleCalc(EjectionDeltaVector, theta, OriginVelocity.normalized);
-
-            //MonoBehaviourExtended.LogFormatted("{0}",EjectionAngle);
-
-            if (Destination.orbit.semiMajorAxis < Origin.orbit.semiMajorAxis)
-            {
-                EjectionAngleIsRetrograde = true;
-                EjectionAngle -= Math.PI;
-                if (EjectionAngle < 0)
-                    EjectionAngle += 2 * Math.PI;
-            }
-            else
-            {
-                EjectionAngleIsRetrograde = false;
-            }
-
-        }
-
-        /// <summary>
-        /// Conversion of ejectionAngle from https://github.com/alexmoon/ksp/blob/gh-pages/javascripts/orbit.js
-        /// </summary>
-        /// <param name="vsoi">Velocity of the Ejection Vector in the Planets SOI</param>
-        /// <param name="theta">???</param>
-        /// <param name="prograde">What direction is prograde</param>
-        /// <returns>Ejection Angle in Radians</returns>
-        private Double EjectionAngleCalc(Vector3d vsoi, Double theta, Vector3d prograde)
-        {
-            Double a, ax, ay, az, b, c, cosTheta, g, q, vx, vy;
-
-            Vector3d _ref = vsoi.normalized;
-            ax = _ref.x; ay = _ref.y; az = _ref.z;
-            cosTheta = Math.Cos(theta);
-            g = -ax / ay;
-            a = 1 + g * g;
-            b = 2 * g * cosTheta / ay;
-            c = cosTheta * cosTheta / (ay * ay) - 1;
-            if (b < 0)
-            {
-                q = -0.5 * (b - Math.Sqrt(b * b - 4 * a * c));
-            }
-            else
-            {
-                q = -0.5 * (b + Math.Sqrt(b * b - 4 * a * c));
-            }
-            vx = q / a;
-            vy = g * vx + cosTheta / ay;
-            if (Math.Sign(Vector3d.Cross(new Vector3d(vx, vy, 0), new Vector3d(ax, ay, az))[2]) != Math.Sign(Math.PI - theta))
-            {
-                vx = c / q;
-                vy = g * vx + cosTheta / ay;
-            }
-            prograde = new Vector3d(prograde.x, prograde.y, 0);
-            if (Vector3d.Cross(new Vector3d(vx, vy, 0), prograde).z < 0)
-            {
-                return (LambertSolver.TwoPi) - Math.Acos(Vector3d.Dot(new Vector3d(vx, vy, 0), prograde));
-            }
-            else
-            {
-                return Math.Acos(Vector3d.Dot(new Vector3d(vx, vy, 0), prograde));
-            }
-        }
-
+        public Vector3d PeriDirection { get; set; }
 
         private Double PhaseAngleCalc(Orbit o1, Orbit o2, Double UT)
         {
@@ -265,7 +168,7 @@ namespace TransferWindowPlanner
                 Message = Message.AppendLine("       UT:      {0:0}", this.DepartureTime + this.TravelTime);
                 Message = Message.AppendLine("Phase Angle:    {0:0.00}°", this.PhaseAngle * LambertSolver.Rad2Deg);
                 //Message = Message.AppendLine("Ejection Angle: {0:0.00}°", this.EjectionAngle * LambertSolver.Rad2Deg);
-                Message = Message.AppendLine("Ejection Angle: {0}", this.EjectionAngleText);
+                Message = Message.AppendLine("Ejection Angle: {0:0.00}°", this.EjectionAngle);
                 Message = Message.AppendLine("Ejection Inc.:  {0:0.00}°", this.EjectionInclination * LambertSolver.Rad2Deg);
                 Message = Message.AppendLine("Ejection LAN:   {0:0.00}°", this.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg);
                 Message = Message.AppendLine("Ejection Δv:    {0:0} m/s", this.DVEjection);
