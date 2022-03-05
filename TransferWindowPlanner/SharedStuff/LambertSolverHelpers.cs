@@ -99,6 +99,11 @@ namespace TransferWindowPlanner
         public Double TransferAngle { get; set; }
 
         /// <summary>
+        /// Radius of the parking orbit around the departure body
+        /// </summary>
+        public Double ParkingSemiMajorAxis { get; set; }
+
+        /// <summary>
         /// Inclination of the escape orbit (and thus the parking orbit)
         /// </summary>
         public Double EjectionInclination { get; set; }

@@ -118,11 +118,6 @@ namespace TransferWindowPlanner
                 mbTWP.PhaseAngle.HideAngle();
                 mbTWP.EjectAngle.HideAngle();
             }
-            if (mbTWP.ParkingOrbit != null)
-            {
-                mbTWP.ParkingOrbit.Cleanup();
-                mbTWP.ParkingOrbit = null;
-            }
             blnDisplayPhase = false;
             blnDisplayEject = false;
             blnDisplayParkingOrbit = false;
@@ -740,7 +735,7 @@ namespace TransferWindowPlanner
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Space(50);
+            GUILayout.Space(25);
 
             if (TransferWindowPlanner.lstScenesForAngles.Contains(HighLogic.LoadedScene) && MapView.MapIsEnabled)
             {
@@ -783,21 +778,7 @@ namespace TransferWindowPlanner
 
                     GUILayout.EndHorizontal();
                     GUILayout.BeginHorizontal();
-                    if (DrawToggle(ref blnDisplayParkingOrbit, "Show Parking Orbit in map view", "ButtonToggle"))
-                    {
-                        if (blnDisplayParkingOrbit)
-                        {
-                            mbTWP.ParkingOrbit = ParkingOrbitRenderer.Setup(cbOrigin,
-                                InitialOrbitAltitude,
-                                TransferSelected.EjectionInclination * LambertSolver.Rad2Deg,
-                                TransferSelected.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg);
-                        }
-                        else
-                        {
-                            mbTWP.ParkingOrbit.Cleanup();
-                            mbTWP.ParkingOrbit = null;
-                        }
-                    }
+                    DrawToggle(ref blnDisplayParkingOrbit, "Show Parking Orbit in map view", "ButtonToggle");
                 }
                 GUILayout.EndHorizontal();
             }
@@ -805,9 +786,7 @@ namespace TransferWindowPlanner
 
         private Boolean blnDisplayPhase = false;
         private Boolean blnDisplayEject = false;
-        private Boolean blnDisplayParkingOrbit = false;
-
-
+        internal Boolean blnDisplayParkingOrbit = false;
 
         internal void ResetWindow()
         {

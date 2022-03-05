@@ -106,10 +106,11 @@ public static class LambertSolver
         double ejectionDeltaV = ejectionDeltaVector.magnitude;
         Vector3d periDirection = Vector3d.zero;
         double ejectionAngle = 0;
+        double parkingSma = initialOrbitAltitude + origin.Radius;
 
         if (initialOrbitAltitude > 0) {
             double mu = origin.gravParameter;
-            double r0 = initialOrbitAltitude + origin.Radius;
+            double r0 = parkingSma;
             double rsoi = origin.sphereOfInfluence;
             double v0 = Math.Sqrt(origin.gravParameter / r0); // Initial circular orbit velocity
             double v1 = Math.Sqrt(ejectionDeltaV * ejectionDeltaV + 2 * v0 * v0 - 2 * mu / rsoi); // Velocity at periapsis
@@ -164,6 +165,7 @@ public static class LambertSolver
         oTransfer.TransferFinalVelocity = velocityBeforeInsertion;
         oTransfer.TransferAngle = Math.Acos(Vector3d.Dot(originPositionAtDeparture, destinationPositionAtArrival) / (originPositionAtDeparture.magnitude * destinationPositionAtArrival.magnitude));
         oTransfer.DVEjection = ejectionDeltaV;
+        oTransfer.ParkingSemiMajorAxis = parkingSma;
         oTransfer.EjectionInclination = ejectionInclination;
         oTransfer.EjectionLongitudeOfAscendingNode = ejectionLan;
         oTransfer.EjectionAngle = ejectionAngle;

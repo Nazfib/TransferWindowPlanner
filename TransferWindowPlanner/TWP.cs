@@ -105,6 +105,7 @@ namespace TransferWindowPlanner
             {
                 PhaseAngle = MapView.MapCamera.gameObject.AddComponent<AngleRenderPhase>();
                 EjectAngle = MapView.MapCamera.gameObject.AddComponent<AngleRenderEject2>();
+                ParkingOrbit = ParkingOrbitRenderer.Setup(this.windowMain, false);
             }
 
             //do the daily version check if required
