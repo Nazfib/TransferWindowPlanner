@@ -7,33 +7,15 @@ namespace TransferWindowPlanner
 {
     public class ParkingOrbitRenderer : OrbitTargetRenderer
     {
-        private TWPWindow _window;
-
-        public static ParkingOrbitRenderer Setup(TWPWindow window, bool activedraw = true)
+        public static ParkingOrbitRenderer Setup(CelestialBody cb, double alt, double inc, double lan, bool activedraw = true)
         {
-            var cb = FlightGlobals.GetHomeBody();
-            var orbit = new Orbit(0, 0, 5 * cb.Radius, 0, 0, 0, 0, cb);
-            var obj = OrbitTargetRenderer.Setup<ParkingOrbitRenderer>("ParkingOrbit", 0, orbit, activedraw);
-            obj._window = window;
-            return obj;
+            Orbit orbit = new Orbit(inc, 0, cb.Radius + alt, lan, 0, 0, 0, cb);
+            return OrbitTargetRenderer.Setup<ParkingOrbitRenderer>("ParkingOrbit", 0, orbit, activedraw);
         }
 
         protected override void UpdateLocals()
         {
-            var transferSelected = _window.TransferSelected;
-            if (transferSelected != null && _window.blnDisplayParkingOrbit)
-            {
-                snapshot.ReferenceBodyIndex = transferSelected.Origin.flightGlobalsIndex;
-                snapshot.semiMajorAxis = transferSelected.ParkingSemiMajorAxis;
-                snapshot.inclination = transferSelected.EjectionInclination * LambertSolver.Rad2Deg;
-                snapshot.LAN = transferSelected.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg;
-                activeDraw = true;
-            }
-            else
-            {
-                activeDraw = false;
-            }
-            targetVessel = FlightGlobals.ActiveVessel;
+            this.targetVessel = FlightGlobals.ActiveVessel;
             base.UpdateLocals();
         }
 
