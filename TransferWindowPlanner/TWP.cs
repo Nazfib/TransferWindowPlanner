@@ -37,7 +37,7 @@ namespace TransferWindowPlanner
 
         internal AngleRenderPhase PhaseAngle;
         internal AngleRenderEject2 EjectAngle;
-        internal ParkingOrbitRenderer ParkingOrbit;
+        internal ContractOrbitRenderer ParkingOrbit;
 
         internal static List<GameScenes> lstScenesForAngles = new List<GameScenes>() { GameScenes.TRACKSTATION, GameScenes.FLIGHT };
 

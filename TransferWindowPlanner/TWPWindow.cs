@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using System.ComponentModel;
-
+using Contracts;
 using KSP;
 using UnityEngine;
 using KSPPluginFramework;
@@ -787,10 +787,21 @@ namespace TransferWindowPlanner
                     {
                         if (blnDisplayParkingOrbit)
                         {
-                            mbTWP.ParkingOrbit = ParkingOrbitRenderer.Setup(cbOrigin,
-                                InitialOrbitAltitude,
+                            Orbit orbit = new Orbit(
                                 TransferSelected.EjectionInclination * LambertSolver.Rad2Deg,
-                                TransferSelected.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg);
+                                0,
+                                InitialOrbitAltitude + cbOrigin.Radius,
+                                TransferSelected.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg,
+                                0, 0, 0, cbOrigin);
+                            // Ugly hack: Creating a new class derived from OrbitTargetRenderer does not work - the orbit
+                            // lags behind the camera movement when panning. Therefore, we need to use one of the built-in
+                            // classes designed for rendering orbits.
+                            // The Setup method requires the contract to be non-null; however, in the *_onUpdateCaption
+                            // methods, a non-null contract will not work (it needs a valid Agent, which can only be set
+                            // by an actual contract). We therefore default-initialize a contract for the Setup method,
+                            // and then immediately set it to null before it is used.
+                            mbTWP.ParkingOrbit = ContractOrbitRenderer.Setup(new Contract(), orbit);
+                            mbTWP.ParkingOrbit.contract = null;
                         }
                         else
                         {
