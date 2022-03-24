@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 
 using KSP;
 using UnityEngine;
+using UnityEngine.Networking;
 using KSPPluginFramework;
 
 namespace TransferWindowPlanner
@@ -95,7 +96,7 @@ namespace TransferWindowPlanner
         }
 
         #region Version Checks
-        private String VersionCheckURL = "http://https://raw.githubusercontent.com/Nazfib/TransferWindowPlanner/master/versioncheck.txt";
+        private String VersionCheckURL = "https://raw.githubusercontent.com/Nazfib/TransferWindowPlanner/master/versioncheck.txt";
         //Could use this one to see usage, but need to be very aware of data connectivity if its ever used "http://bit.ly/TWPVersion";
 
         private String ConvertVersionCheckDateToString(DateTime Date)
@@ -198,41 +199,44 @@ namespace TransferWindowPlanner
         internal Boolean VersionCheckRunning = false;
         private System.Collections.IEnumerator CRVersionCheck()
         {
-            WWW wwwVersionCheck;
-            {
-                //set initial stuff and save it
-                VersionCheckRunning = true;
-                this.VersionCheckResult = "Unknown - check again later";
-                this.VersionCheckDate_Attempt = DateTime.Now;
-                this.Save();
+            //set initial stuff and save it
+            VersionCheckRunning = true;
+            this.VersionCheckResult = "Unknown - check again later";
+            this.VersionCheckDate_Attempt = DateTime.Now;
+            this.Save();
 
-                //now do the download
-                MonoBehaviourExtended.LogFormatted("Reading version from Web");
-                wwwVersionCheck = new WWW(VersionCheckURL);
-                yield return wwwVersionCheck;
-                if (wwwVersionCheck.error == null)
+            //now do the download
+            MonoBehaviourExtended.LogFormatted("Reading version from Web");
+            using (UnityWebRequest webRequest = UnityWebRequest.Get(VersionCheckURL))
+            {
+                yield return webRequest.SendWebRequest();
+                if (webRequest.isNetworkError)
                 {
-                    CRVersionCheck_Completed(wwwVersionCheck);
+                    MonoBehaviourExtended.LogFormatted("Version Download failed: {0}", webRequest.error);
+                }
+                else if (webRequest.isHttpError)
+                {
+                    MonoBehaviourExtended.LogFormatted("Version Download failed: {0}", webRequest.downloadHandler.text);
                 }
                 else
                 {
-                    MonoBehaviourExtended.LogFormatted("Version Download failed:{0}", wwwVersionCheck.error);
+                    CRVersionCheck_Completed(webRequest.downloadHandler.text);
                 }
-                VersionCheckRunning = false;
             }
+            VersionCheckRunning = false;
+
         }
 
-        void CRVersionCheck_Completed(WWW wwwVersionCheck)
+        void CRVersionCheck_Completed(string response)
         {
             try
             {
                 //get the response from the variable and work with it
                 //Parse it for the version String
-                String strFile = wwwVersionCheck.text;
-                MonoBehaviourExtended.LogFormatted("Response Length:" + strFile.Length);
+                MonoBehaviourExtended.LogFormatted("Response Length:" + response.Length);
 
                 Match matchVersion;
-                matchVersion = Regex.Match(strFile, "(?<=\\|LATESTVERSION\\|).+(?=\\|LATESTVERSION\\|)", System.Text.RegularExpressions.RegexOptions.Singleline);
+                matchVersion = Regex.Match(response, "(?<=\\|LATESTVERSION\\|).+(?=\\|LATESTVERSION\\|)", System.Text.RegularExpressions.RegexOptions.Singleline);
                 MonoBehaviourExtended.LogFormatted("Got Version '" + matchVersion.ToString() + "'");
 
                 String strVersionWeb = matchVersion.ToString();
@@ -258,52 +262,6 @@ namespace TransferWindowPlanner
             this.Save();
             VersionAttentionFlag = VersionAvailable;
         }
-
-        //public Boolean getLatestVersion()
-        //{
-        //    Boolean blnReturn = false;
-        //    try
-        //    {
-        //        //Get the file from Codeplex
-        //        this.VersionCheckResult = "Unknown - check again later";
-        //        this.VersionCheckDate_Attempt = DateTime.Now;
-
-        //        MonoBehaviourExtended.LogFormatted("Reading version from Web");
-        //        //Page content FormatException is |LATESTVERSION|1.2.0.0|LATESTVERSION|
-        //        //                WWW www = new WWW("http://kspalternateresourcepanel.codeplex.com/wikipage?title=LatestVersion");
-        //        WWW www = new WWW("https://sites.google.com/site/kspalternateresourcepanel/latestversion");
-        //        while (!www.isDone) { }
-
-        //        //Parse it for the version String
-        //        String strFile = www.text;
-        //        MonoBehaviourExtended.LogFormatted("Response Length:" + strFile.Length);
-
-        //        Match matchVersion;
-        //        matchVersion = Regex.Match(strFile, "(?<=\\|LATESTVERSION\\|).+(?=\\|LATESTVERSION\\|)", System.Text.RegularExpressions.RegexOptions.Singleline);
-        //        MonoBehaviourExtended.LogFormatted("Got Version '" + matchVersion.ToString() + "'");
-
-        //        String strVersionWeb = matchVersion.ToString();
-        //        if (strVersionWeb != "")
-        //        {
-        //            this.VersionCheckResult = "Success";
-        //            this.VersionCheckDate_Success = DateTime.Now;
-        //            this.VersionWeb = strVersionWeb;
-        //            blnReturn = true;
-        //        }
-        //        else
-        //        {
-        //            this.VersionCheckResult = "Unable to parse web service";
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MonoBehaviourExtended.LogFormatted("Failed to read Version info from web");
-        //        MonoBehaviourExtended.LogFormatted(ex.Message);
-
-        //    }
-        //    MonoBehaviourExtended.LogFormatted("Version Check result:" + VersionCheckResult);
-        //    return blnReturn;
-        //}
         #endregion
 
     }
