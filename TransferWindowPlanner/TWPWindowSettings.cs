@@ -281,7 +281,7 @@ namespace TransferWindowPlanner
                 GUILayout.BeginVertical(Styles.styleSettingsArea);
                 //if (KACWrapper.KAC.DrawAlarmActionChoice(ref KACAlarmAction, "On Alarm:", 108, 61))
                 if (KACWrapper.KAC.DrawAlarmActionChoice(ref settings.KACAlarmAction, "Action:", 90 , 38))
-                    {
+                {
                     settings.Save();
                 }
 

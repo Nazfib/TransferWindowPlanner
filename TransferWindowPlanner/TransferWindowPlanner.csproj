@@ -1,124 +1,62 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{942B92F0-C682-424E-814E-C2DDD1E84E2F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TransferWindowPlanner</RootNamespace>
-    <AssemblyName>TransferWindowPlanner</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <KSPDir>..\..\_Versions\1.10.1</KSPDir>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <Version>1.9.0.0</Version>
+    <KSPVersion>1.10.1</KSPVersion>
+    <KSPDir>..\..\_Versions\$(KSPVersion)</KSPDir>
+
+    <Company>TriggerTech</Company>
+    <Product>TransferWindowPlanner</Product>
+    <Copyright>Copyright © 2014</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>$(KSPDir)\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
       <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestWWWModule">
       <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="FrameworkExt\Extensions.cs" />
-    <Compile Include="FrameworkExt\MonoBehaviourWindowPlus.cs" />
-    <Compile Include="Framework\ConfigNodeStorage.cs" />
-    <Compile Include="Framework\ExtensionsUnity.cs" />
-    <Compile Include="Framework\MonoBehaviourExtended.cs" />
-    <Compile Include="Framework\MonoBehaviourWindow.cs" />
-    <Compile Include="Framework\SkinsLibrary.cs" />
-    <Compile Include="SharedStuff\AngleRenderEject.cs" />
-    <Compile Include="SharedStuff\AngleRenderEject2.cs" />
-    <Compile Include="SharedStuff\AngleRenderPhase.cs" />
-    <Compile Include="SharedStuff\KACWrapper.cs" />
-    <Compile Include="SharedStuff\AppLauncher.cs" />
-    <Compile Include="FrameworkExt\KSPDateTime.cs" />
-    <Compile Include="FrameworkExt\KSPDateStructure.cs" />
-    <Compile Include="FrameworkExt\KSPTimeSpan.cs" />
-    <Compile Include="SharedStuff\LambertSolverHelpers.cs" />
-    <Compile Include="SharedStuff\Utilities.cs" />
-    <Compile Include="TimeObjects.cs" />
-    <Compile Include="TWPWindow.cs" />
-    <Compile Include="TWPWindowDebug.cs" />
-    <Compile Include="Resources.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="StylesAndSkins.cs" />
-    <Compile Include="SharedStuff\ToolbarWrapper.cs" />
-    <Compile Include="TWP.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SharedStuff\LambertSolver.cs" />
-    <Compile Include="TWPWindowSettings.cs" />
-    <Compile Include="TWPWindowSettingsBlockout.cs" />
-    <Compile Include="TWPWindowWorkers.cs" />
-    <Compile Include="TWPWindowWorkerLongRun.cs" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-
-  <Import Project="packages\Microsoft.NETFramework.ReferenceAssemblies.net48.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net48.targets" Condition="Exists('packages\Microsoft.NETFramework.ReferenceAssemblies.net48.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net48.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('packages\Microsoft.NETFramework.ReferenceAssemblies.net48.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net48.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.NETFramework.ReferenceAssemblies.net48.1.0.2\build\Microsoft.NETFramework.ReferenceAssemblies.net48.targets'))" />
-  </Target>
-
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  -->
-  <Target Name="AfterBuild">
+  <Target Name="CopyToKSP" AfterTargets="Build">
     <ItemGroup>
       <PluginFiles Include="..\PluginFiles\GameData\**\*.*" />
     </ItemGroup>
