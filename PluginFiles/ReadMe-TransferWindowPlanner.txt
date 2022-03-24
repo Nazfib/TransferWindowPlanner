@@ -27,6 +27,13 @@ LICENSE
 This work is licensed under an MIT license as outlined at the OSI site. Visit the documentation site for more details and Attribution
 
 VERSION HISTORY
+Version 1.9.0.0     -   KSP Version: 1.10.1
+- [Nazfib] Change ejection angle display to show escape direction and burn location
+- [Nazfib] Change the "Ejection Angle" field to show the angle between the burn and the escape direction, instead of the angle of the burn from the source body's orbital prograde.
+- [Nazfib] Add a button to show the parking orbit in map view
+- [Nazfib] Change the version checker URL location
+- [Nazfib] Change the build system to use msbuild everywhere (no more batch and powershell scripts)
+
 Version 1.8.0.1     -   KSP Version: 1.10.1
 - [Nazfib] Remove logging from the background thread, hopefully fixes the crashes
 
