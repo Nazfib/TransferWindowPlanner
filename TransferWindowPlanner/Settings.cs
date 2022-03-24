@@ -95,7 +95,7 @@ namespace TransferWindowPlanner
         }
 
         #region Version Checks
-        private String VersionCheckURL = "http://triggerau.github.io/TransferWindowPlanner/versioncheck.txt";
+        private String VersionCheckURL = "http://https://raw.githubusercontent.com/Nazfib/TransferWindowPlanner/master/versioncheck.txt";
         //Could use this one to see usage, but need to be very aware of data connectivity if its ever used "http://bit.ly/TWPVersion";
 
         private String ConvertVersionCheckDateToString(DateTime Date)

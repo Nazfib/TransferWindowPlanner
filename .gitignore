@@ -8,6 +8,8 @@
 
 .vs/
 
+**/.idea
+
 # Build results
 
 [Dd]ebug/
@@ -19,6 +21,7 @@ build/
 
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
 !packages/*/build/
+packages
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

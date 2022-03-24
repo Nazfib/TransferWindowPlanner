@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using System.ComponentModel;
-
+using Contracts;
 using KSP;
 using UnityEngine;
 using KSPPluginFramework;
@@ -118,8 +118,14 @@ namespace TransferWindowPlanner
                 mbTWP.PhaseAngle.HideAngle();
                 mbTWP.EjectAngle.HideAngle();
             }
+            if (mbTWP.ParkingOrbit != null)
+            {
+                mbTWP.ParkingOrbit.Cleanup();
+                mbTWP.ParkingOrbit = null;
+            }
             blnDisplayPhase = false;
             blnDisplayEject = false;
+            blnDisplayParkingOrbit = false;
         }
 
         internal override void OnGUIOnceOnly()
@@ -482,8 +488,7 @@ namespace TransferWindowPlanner
             GUILayout.BeginVertical();
             //GUILayout.Label(String.Format("{0:0}", KSPTime.PrintDate(new KSPTime(TransferSelected.DepartureTime + TransferSelected.TravelTime), KSPTime.PrintTimeFormat.DateTimeString)), Styles.styleTextYellow);
             GUILayout.Label(new KSPDateTime(TransferSelected.DepartureTime + TransferSelected.TravelTime).ToStringStandard(DateStringFormatsEnum.DateTimeFormat), Styles.styleTextYellow);
-            //GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.EjectionAngle * LambertSolver.Rad2Deg), Styles.styleTextYellow);
-            GUILayout.Label(TransferSelected.EjectionAngleText, Styles.styleTextYellow);
+            GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.EjectionAngle * LambertSolver.Rad2Deg), Styles.styleTextYellow);
             GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.EjectionInclination * LambertSolver.Rad2Deg), Styles.styleTextYellow);
             if (TransferSpecs.FinalOrbitAltitude > 0) {
                 GUILayout.Label(String.Format("{0:0.00}°", TransferSelected.InsertionInclination * LambertSolver.Rad2Deg), Styles.styleTextYellow);
@@ -533,8 +538,7 @@ namespace TransferWindowPlanner
             Message = Message.AppendLine("Arrive at:      {0}", new KSPDateTime(TransferSelected.DepartureTime + TransferSelected.TravelTime).ToStringStandard(DateStringFormatsEnum.DateTimeFormat));
             Message = Message.AppendLine("       UT:      {0:0}", TransferSelected.DepartureTime + TransferSelected.TravelTime);
             Message = Message.AppendLine("Phase Angle:    {0:0.00}°", TransferSelected.PhaseAngle * LambertSolver.Rad2Deg);
-            //Message = Message.AppendLine("Ejection Angle: {0:0.00}°", TransferSelected.EjectionAngle * LambertSolver.Rad2Deg);
-            Message = Message.AppendLine("Ejection Angle: {0}", TransferSelected.EjectionAngleText);
+            Message = Message.AppendLine("Ejection Angle: {0:0.00}°", TransferSelected.EjectionAngle * LambertSolver.Rad2Deg);
             Message = Message.AppendLine("Ejection Inc.:  {0:0.00}°", TransferSelected.EjectionInclination * LambertSolver.Rad2Deg);
             Message = Message.AppendLine("Ejection LAN:   {0:0.00}°", TransferSelected.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg);
             Message = Message.AppendLine("Ejection Δv:    {0:0} m/s", TransferSelected.DVEjection);
@@ -736,7 +740,7 @@ namespace TransferWindowPlanner
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Space(50);
+            GUILayout.Space(25);
 
             if (TransferWindowPlanner.lstScenesForAngles.Contains(HighLogic.LoadedScene) && MapView.MapIsEnabled)
             {
@@ -769,11 +773,40 @@ namespace TransferWindowPlanner
                         {
                             blnDisplayPhase = false;
                             mbTWP.PhaseAngle.HideAngle();
-                            mbTWP.EjectAngle.DrawAngle(cbOrigin,TransferSelected.EjectionAngle * LambertSolver.Rad2Deg,TransferSelected.EjectionAngleIsRetrograde);
+                            mbTWP.EjectAngle.DrawAngle(cbOrigin,TransferSelected.EjectionVector, TransferSelected.PeriDirection);
                         }
                         else
                         {
                             mbTWP.EjectAngle.HideAngle();
+                        }
+                    }
+
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                    if (DrawToggle(ref blnDisplayParkingOrbit, "Show Parking Orbit in map view", "ButtonToggle"))
+                    {
+                        if (blnDisplayParkingOrbit)
+                        {
+                            Orbit orbit = new Orbit(
+                                TransferSelected.EjectionInclination * LambertSolver.Rad2Deg,
+                                0,
+                                InitialOrbitAltitude + cbOrigin.Radius,
+                                TransferSelected.EjectionLongitudeOfAscendingNode * LambertSolver.Rad2Deg,
+                                0, 0, 0, cbOrigin);
+                            // Ugly hack: Creating a new class derived from OrbitTargetRenderer does not work - the orbit
+                            // lags behind the camera movement when panning. Therefore, we need to use one of the built-in
+                            // classes designed for rendering orbits.
+                            // The Setup method requires the contract to be non-null; however, in the *_onUpdateCaption
+                            // methods, a non-null contract will not work (it needs a valid Agent, which can only be set
+                            // by an actual contract). We therefore default-initialize a contract for the Setup method,
+                            // and then immediately set it to null before it is used.
+                            mbTWP.ParkingOrbit = ContractOrbitRenderer.Setup(new Contract(), orbit);
+                            mbTWP.ParkingOrbit.contract = null;
+                        }
+                        else
+                        {
+                            mbTWP.ParkingOrbit.Cleanup();
+                            mbTWP.ParkingOrbit = null;
                         }
                     }
                 }
@@ -783,6 +816,9 @@ namespace TransferWindowPlanner
 
         private Boolean blnDisplayPhase = false;
         private Boolean blnDisplayEject = false;
+        private Boolean blnDisplayParkingOrbit = false;
+
+
 
         internal void ResetWindow()
         {

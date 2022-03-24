@@ -234,15 +234,15 @@ namespace TransferWindowPlanner
                 //{
                 //    //DrawLabel("body Vel:{0}", EjectAngle.bodyOrigin.orbit.getOrbitalVelocityAtUT(Planetarium.GetUniversalTime()));
 
-                //    //DrawLabel("VectStart:{0}", EjectAngle.vectPosWorldOrigin);
+                //    //DrawLabel("VectStart:{0}", EjectAngle.vectPosWorldStart);
                 //    //DrawLabel("VectPivot:{0}", EjectAngle.vectPosWorldPivot);
                 //    //DrawLabel("VectEnd:{0}", EjectAngle.vectPosWorldEnd);
-                //    //DrawLabel("Length:{0}", (EjectAngle.vectPosWorldPivot - EjectAngle.vectPosWorldOrigin).magnitude);
+                //    //DrawLabel("Length:{0}", (EjectAngle.vectPosWorldPivot - EjectAngle.vectPosWorldStart).magnitude);
                     
 
-                //    //DrawLabel("cam:{0} - {1}", PhaseAngle.cam.Distance, (ScaledSpace.LocalToScaledSpace(PhaseAngle.cam.transform.position) - ScaledSpace.LocalToScaledSpace(PhaseAngle.vectPosWorldOrigin)).magnitude);
-                //    //DrawLabel("cam2:{0} - {1} - {2}", PhaseAngle.cam.transform.position, PhaseAngle.cam.target.transform.position, ScaledSpace.LocalToScaledSpace(PhaseAngle.vectPosWorldOrigin));
-                //    //DrawLabel("cam3:{0} - {1} ", PhaseAngle.cam.camera.WorldToScreenPoint(PhaseAngle.vectPosWorldOrigin), PhaseAngle.cam.camera.WorldToScreenPoint(ScaledSpace.LocalToScaledSpace(PhaseAngle.vectPosWorldOrigin)));
+                //    //DrawLabel("cam:{0} - {1}", PhaseAngle.cam.Distance, (ScaledSpace.LocalToScaledSpace(PhaseAngle.cam.transform.position) - ScaledSpace.LocalToScaledSpace(PhaseAngle.vectPosWorldStart)).magnitude);
+                //    //DrawLabel("cam2:{0} - {1} - {2}", PhaseAngle.cam.transform.position, PhaseAngle.cam.target.transform.position, ScaledSpace.LocalToScaledSpace(PhaseAngle.vectPosWorldStart));
+                //    //DrawLabel("cam3:{0} - {1} ", PhaseAngle.cam.camera.WorldToScreenPoint(PhaseAngle.vectPosWorldStart), PhaseAngle.cam.camera.WorldToScreenPoint(ScaledSpace.LocalToScaledSpace(PhaseAngle.vectPosWorldStart)));
 
 
 

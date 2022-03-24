@@ -1,179 +1,101 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{942B92F0-C682-424E-814E-C2DDD1E84E2F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TransferWindowPlanner</RootNamespace>
-    <AssemblyName>TransferWindowPlanner</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_Versions\KSP_win_PluginTest\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <Version>1.9.0.0</Version>
+    <KSPVersion>1.10.1</KSPVersion>
+    <KSPDir>..\..\_Versions\$(KSPVersion)</KSPDir>
+
+    <Company>TriggerTech</Company>
+    <Product>TransferWindowPlanner</Product>
+    <Copyright>Copyright © 2014</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_Versions\KSP_win_PluginTest\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_Versions\KSP_win_PluginTest\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_Versions\KSP_win_PluginTest\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_Versions\KSP_win_PluginTest\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_Versions\KSP_win_PluginTest\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_Versions\KSP_win_PluginTest\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.UnityWebRequestWWWModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_Versions\KSP_win_PluginTest\KSP_x64_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>$(KSPDir)\KSP_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="FrameworkExt\Extensions.cs" />
-    <Compile Include="FrameworkExt\MonoBehaviourWindowPlus.cs" />
-    <Compile Include="Framework\ConfigNodeStorage.cs" />
-    <Compile Include="Framework\ExtensionsUnity.cs" />
-    <Compile Include="Framework\MonoBehaviourExtended.cs" />
-    <Compile Include="Framework\MonoBehaviourWindow.cs" />
-    <Compile Include="Framework\SkinsLibrary.cs" />
-    <Compile Include="SharedStuff\AngleRenderEject.cs" />
-    <Compile Include="SharedStuff\AngleRenderPhase.cs" />
-    <Compile Include="SharedStuff\KACWrapper.cs" />
-    <Compile Include="SharedStuff\AppLauncher.cs" />
-    <Compile Include="FrameworkExt\KSPDateTime.cs" />
-    <Compile Include="FrameworkExt\KSPDateStructure.cs" />
-    <Compile Include="FrameworkExt\KSPTimeSpan.cs" />
-    <Compile Include="SharedStuff\LambertSolverHelpers.cs" />
-    <Compile Include="SharedStuff\Utilities.cs" />
-    <Compile Include="TimeObjects.cs" />
-    <Compile Include="TWPWindow.cs" />
-    <Compile Include="TWPWindowDebug.cs" />
-    <Compile Include="Resources.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="StylesAndSkins.cs" />
-    <Compile Include="SharedStuff\ToolbarWrapper.cs" />
-    <Compile Include="TWP.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SharedStuff\LambertSolver.cs" />
-    <Compile Include="TWPWindowSettings.cs" />
-    <Compile Include="TWPWindowSettingsBlockout.cs" />
-    <Compile Include="TWPWindowWorkers.cs" />
-    <Compile Include="TWPWindowWorkerLongRun.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>rem Set the Variables we need
-echo Finding KSP
-rem if exist "R:\~Games\KSP_Win_PlugInTest_Minimal\KSP.exe" (
-rem 	set GAMEPATH="R:\~Games\KSP_Win_PlugInTest_Minimal"
-rem ) else if exist "D:\~Games\KSP_Win_PlugInTest_Minimal\KSP.exe" (
-rem 	set GAMEPATH="D:\~Games\KSP_Win_PlugInTest_Minimal"
-rem ) else if exist "C:\~Games\KSP_Win_PlugInTest_Minimal\KSP.exe" (
-rem 	set GAMEPATH="C:\~Games\KSP_Win_PlugInTest_Minimal
-rem ) else if exist "D:\~Games\KSP_Win_PlugInTest\KSP.exe" (
 
-if exist "C:\Data\Programming\KSP\_Versions\KSP_Win_PlugInTest\KSP_x64.exe" (
-	set GAMEPATH="C:\Data\Programming\KSP\_Versions\KSP_Win_PlugInTest"
-) else if exist "C:\~Games\KSP_Win_PlugInTest\KSP.exe" (
-	set GAMEPATH="C:\~Games\KSP_Win_PlugInTest"
-)else (
-	echo "Cant find KSP"
-	exit 1
-)
-
-echo Gamepath: %25GAMEPATH%25
-echo ConfigName: $(ConfigurationName)
-set DestPath="%25GAMEPATH%25\GameData\TriggerTech\$(ProjectName)"
-set Binary="%25GAMEPATH%25\KSP_x64.exe"
-
-if not $(ConfigurationName)==Debug goto DEBUGREBUILDCONFIG
-:DEBUGCONFIG
-rem Copy DLL and run KSP
-
-copy "$(TargetPath)" "%25DestPath%25"
-rem copy "$(TargetDir)$(TargetName).pdb" "%25DestPath%25"
-rem "C:\Program Files (x86)\Unity\Editor\Data\MonoBleedingEdge\bin\cli.bat" "C:\Program Files (x86)\Unity\Editor\Data\MonoBleedingEdge\lib\mono\4.0\pdb2mdb.exe" "%25DestPath%25\$(TargetFileName)"
-
-rem and then run the game
-if exist "$(ProjectDir)..\..\StartX.exe" goto STARTX
-echo Running Directly
-"%25Binary%25"
-goto END
-
-:STARTX
-echo STARTX running
-"$(ProjectDir)..\..\StartX.exe" "%25Binary%25"
-goto END
-"%25Binary%25"
-
-goto END
-
-:DEBUGREBUILDCONFIG
-if not $(ConfigurationName)==DebugAndRebuild goto END
-rem This one will empty the dest folder and copy all the source files
-
-rem Delete the folder and recreate it
-rmdir /s /q "%25DestPath%25"
-mkdir "%25DestPath%25"
-
-rem Nowcopy all the files from the pluginfiles source
-xcopy "%25SourcePath%25\*.*" "%25DestPath%25" /SE
-rem and copy the new dll
-copy "$(TargetPath)" "%25DestPath%25"
-
-rem and then run the game
-"%25Binary%25"
-
-goto END
-
-:END</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Target Name="CopyToKSP" AfterTargets="Build">
+    <ItemGroup>
+      <PluginFiles Include="..\PluginFiles\GameData\**\*.*" />
+    </ItemGroup>
+    <Copy SkipUnchangedFiles="true" SourceFiles="@(PluginFiles)" DestinationFiles="@(PluginFiles -> '$(KSPDir)\GameData\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(KSPDir)\GameData\TriggerTech\$(ProjectName)" />
   </Target>
-  <Target Name="AfterBuild">
+
+  <Target Name="CreateReleaseZip" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <ReleaseDir>..\..\Releases\$(ProjectName)_v$(Version)</ReleaseDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <PluginFiles Include="..\PluginFiles\GameData\**\*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(PluginFiles)" DestinationFiles="@(PluginFiles -> '$(ReleaseDir)\GameData\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ReleaseDir)\GameData\TriggerTech\$(ProjectName)" />
+
+    <!-- Replace %VERSIONSTRING%, %PLUGIN_x% by the version in some text files -->
+    <WriteLinesToFile
+            File="$(ReleaseDir)\ReadMe-$(ProjectName).txt"
+            Lines="$([System.IO.File]::ReadAllText(..\PluginFiles\ReadMe-$(ProjectName).txt).Replace('%VERSIONSTRING%','$(Version)'))"
+            Overwrite="true"/>
+    <WriteLinesToFile
+            File="$(ProjectName).version"
+            Lines="$([System.IO.File]::ReadAllText(..\PluginFiles\$(ProjectName).version)
+                    .Replace('%PLUGIN_MAJOR%',$([System.Version]::Parse('$(Version)').Major.ToString()))
+                    .Replace('%PLUGIN_MINOR%',$([System.Version]::Parse('$(Version)').Minor.ToString()))
+                    .Replace('%PLUGIN_PATCH%',$([System.Version]::Parse('$(Version)').Build.ToString()))
+                    .Replace('%PLUGIN_BUILD%',$([System.Version]::Parse('$(Version)').Revision.ToString()))
+                    .Replace('%KSP_MAJOR%',$([System.Version]::Parse('$(KSPVersion)').Major.ToString()))
+                    .Replace('%KSP_MINOR%',$([System.Version]::Parse('$(KSPVersion)').Minor.ToString()))
+                    .Replace('%KSP_PATCH%',$([System.Version]::Parse('$(KSPVersion)').Build.ToString()))
+                    )"
+            Overwrite="true"/>
+    <Copy SourceFiles="$(ProjectName).version" DestinationFolder="$(ReleaseDir)\GameData\TriggerTech\$(ProjectName)" />
+
+    <!-- Zip up the results -->
+    <ZipDirectory SourceDirectory="$(ReleaseDir)" DestinationFile="$(ReleaseDir).zip" />
+    <RemoveDir Directories="$(ReleaseDir)" />
   </Target>
-  -->
 </Project>

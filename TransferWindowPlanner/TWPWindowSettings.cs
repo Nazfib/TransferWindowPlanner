@@ -281,7 +281,7 @@ namespace TransferWindowPlanner
                 GUILayout.BeginVertical(Styles.styleSettingsArea);
                 //if (KACWrapper.KAC.DrawAlarmActionChoice(ref KACAlarmAction, "On Alarm:", 108, 61))
                 if (KACWrapper.KAC.DrawAlarmActionChoice(ref settings.KACAlarmAction, "Action:", 90 , 38))
-                    {
+                {
                     settings.Save();
                 }
 
@@ -415,7 +415,7 @@ namespace TransferWindowPlanner
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(80);
                 if (GUILayout.Button("Updated Version Available - Click Here", Styles.styleTextYellowBold))
-                    Application.OpenURL("https://github.com/TriggerAu/TransferWindowPlanner/releases");
+                    Application.OpenURL("https://github.com/Nazfib/TransferWindowPlanner/releases");
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
@@ -426,19 +426,19 @@ namespace TransferWindowPlanner
             GUILayout.BeginHorizontal();
             GUILayout.BeginVertical();
             //GUILayout.Label("Written by:", Styles.styleStageTextHead);
-            GUILayout.Label("Documentation and Links:", Styles.styleTextHeading);
+            //GUILayout.Label("Documentation and Links:", Styles.styleTextHeading);
             GUILayout.Label("GitHub Page:", Styles.styleTextHeading);
-            GUILayout.Label("Forum Page:", Styles.styleTextHeading);
+            //GUILayout.Label("Forum Page:", Styles.styleTextHeading);
             GUILayout.EndVertical();
 
             GUILayout.BeginVertical();
             //GUILayout.Label("Trigger Au",KACResources.styleContent);
+            //if (GUILayout.Button("Click Here", Styles.styleTextCenterGreen))
+            //    Application.OpenURL("http://triggerau.github.io/TransferWindowPlanner/");
             if (GUILayout.Button("Click Here", Styles.styleTextCenterGreen))
-                Application.OpenURL("http://triggerau.github.io/TransferWindowPlanner/");
-            if (GUILayout.Button("Click Here", Styles.styleTextCenterGreen))
-                Application.OpenURL("http://github.com/TriggerAu/TransferWindowPlanner/");
-            if (GUILayout.Button("Click Here", Styles.styleTextCenterGreen))
-                Application.OpenURL("http://forum.kerbalspaceprogram.com/threads/93115-Transfer-Window-Planner");
+                Application.OpenURL("http://github.com/Nazfib/TransferWindowPlanner/");
+            //if (GUILayout.Button("Click Here", Styles.styleTextCenterGreen))
+            //    Application.OpenURL("http://forum.kerbalspaceprogram.com/threads/93115-Transfer-Window-Planner");
 
             GUILayout.EndVertical();
 
