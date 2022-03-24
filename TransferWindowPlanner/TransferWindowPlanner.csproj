@@ -63,4 +63,35 @@
     <Copy SkipUnchangedFiles="true" SourceFiles="@(PluginFiles)" DestinationFiles="@(PluginFiles -> '$(KSPDir)\GameData\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(KSPDir)\GameData\TriggerTech\$(ProjectName)" />
   </Target>
+
+  <Target Name="CreateReleaseZip" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <ReleaseDir>..\..\Releases\$(ProjectName)_v$(Version)</ReleaseDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <PluginFiles Include="..\PluginFiles\GameData\**\*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(PluginFiles)" DestinationFiles="@(PluginFiles -> '$(ReleaseDir)\GameData\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ReleaseDir)\GameData\TriggerTech\$(ProjectName)" />
+    <!-- Replace %VERSIONSTRING%, %PLUGIN_x% by the version in some text files -->
+    <WriteLinesToFile
+            File="$(ReleaseDir)\ReadMe-$(ProjectName).txt"
+            Lines="$([System.IO.File]::ReadAllText(..\PluginFiles\ReadMe-$(ProjectName).txt).Replace('%VERSIONSTRING%','$(Version)'))"
+            Overwrite="true"/>
+    <WriteLinesToFile
+            File="$(ReleaseDir)\GameData\TriggerTech\$(ProjectName)\$(ProjectName).version"
+            Lines="$([System.IO.File]::ReadAllText(..\PluginFiles\$(ProjectName).version)
+                    .Replace('%PLUGIN_MAJOR%',$([System.Version]::Parse('$(Version)').Major.ToString()))
+                    .Replace('%PLUGIN_MINOR%',$([System.Version]::Parse('$(Version)').Minor.ToString()))
+                    .Replace('%PLUGIN_PATCH%',$([System.Version]::Parse('$(Version)').Build.ToString()))
+                    .Replace('%PLUGIN_BUILD%',$([System.Version]::Parse('$(Version)').Revision.ToString()))
+                    .Replace('%KSP_MAJOR%',$([System.Version]::Parse('$(KSPVersion)').Major.ToString()))
+                    .Replace('%KSP_MINOR%',$([System.Version]::Parse('$(KSPVersion)').Minor.ToString()))
+                    .Replace('%KSP_PATCH%',$([System.Version]::Parse('$(KSPVersion)').Build.ToString()))
+                    )"
+            Overwrite="true"/>
+    <ZipDirectory SourceDirectory="$(ReleaseDir)" DestinationFile="$(ReleaseDir).zip" />
+    <RemoveDir Directories="$(ReleaseDir)" />
+  </Target>
 </Project>
