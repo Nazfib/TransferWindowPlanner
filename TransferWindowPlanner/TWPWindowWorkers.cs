@@ -329,6 +329,11 @@ namespace TransferWindowPlanner
                     mbTWP.PhaseAngle.AngleTargetValue = TransferSelected.PhaseAngle * LambertSolver.Rad2Deg;
                     if (!mbTWP.PhaseAngle.ShowTargetAngle)
                         mbTWP.PhaseAngle.ShowTargetAngle = true;
+                    if (mbTWP.ParkingOrbit != null)
+                    {
+                        // Re-draw the parking orbit display when the values change.
+                        DrawParkingOrbit();
+                    }
                 }
             }
         }
