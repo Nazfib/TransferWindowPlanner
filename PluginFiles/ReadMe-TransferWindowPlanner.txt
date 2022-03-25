@@ -27,6 +27,11 @@ LICENSE
 This work is licensed under an MIT license as outlined at the OSI site. Visit the documentation site for more details and Attribution
 
 VERSION HISTORY
+Version 1.9.0.1     -   KSP Version: 1.12.3
+- [Nazfib] Recompile against KSP 1.12.3
+- [Nazfib] Loosen the .version compatibility bounds to allow 1.10 to 1.12
+- [Nazfib] Reset the parking orbit when the selected transfer is changed
+
 Version 1.9.0.0     -   KSP Version: 1.10.1
 - [Nazfib] Change ejection angle display to show escape direction and burn location
 - [Nazfib] Change the "Ejection Angle" field to show the angle between the burn and the escape direction, instead of the angle of the burn from the source body's orbital prograde.
