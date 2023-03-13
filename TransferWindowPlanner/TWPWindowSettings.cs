@@ -204,7 +204,7 @@ namespace TransferWindowPlanner
                 if (settings.ButtonStyleChosen == Settings.ButtonStyleEnum.Toolbar)
                 {
                     if (GUILayout.Button(new GUIContent("Not Installed. Click for Toolbar Info", "Click to open your browser and find out more about the Common Toolbar"), Styles.styleTextCenterGreen))
-                        Application.OpenURL("http://forum.kerbalspaceprogram.com/threads/60863");
+                        Application.OpenURL("https://forum.kerbalspaceprogram.com/index.php?/topic/161857--");
                     //intBlizzyToolbarMissingHeight = 18;
                 }
                 //if (DrawToggle(ref settings.UseBlizzyToolbarIfAvailable, new GUIContent("Use Common Toolbar", "Choose to use the Common  Toolbar or the native KSP ARP button"), Styles.styleToggle))
@@ -276,7 +276,7 @@ namespace TransferWindowPlanner
                 else if (TWP_KACWrapper.KACWrapper.NeedUpgrade)
                 {
                     if (GUILayout.Button(new GUIContent("You need a newer version of KAC", "Click to open your browser and download a newer Kerbal Alarm Clock"), Styles.styleTextCenterGreen))
-                        Application.OpenURL("http://forum.kerbalspaceprogram.com/threads/24786");
+                        Application.OpenURL("https://forum.kerbalspaceprogram.com/index.php?/topic/22809--");
                 }
                 else if (!TWP_KACWrapper.KACWrapper.InstanceExists)
                 {
