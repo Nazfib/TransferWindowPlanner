@@ -64,7 +64,7 @@ namespace TransferWindowPlanner
 
 
         [Persistent] internal TWP_KACWrapper.KACWrapper.KACAPI.AlarmActionEnum KACAlarmAction = TWP_KACWrapper.KACWrapper.KACAPI.AlarmActionEnum.KillWarp;
-        [Persistent] internal Double KACMargin = 24;
+        [Persistent] internal Double AlarmMargin = 24;
 
         [Persistent] internal Boolean ClickThroughProtect_KSC=true;
         [Persistent] internal Boolean ClickThroughProtect_Editor=true;
@@ -72,6 +72,7 @@ namespace TransferWindowPlanner
         [Persistent] internal Boolean ClickThroughProtect_Tracking = true;
 
         [Persistent] internal bool UseStockDateFormatters = true;
+        [Persistent] internal bool ForceUseStockAlarmClock = false;
 
         //Version Stuff
         [Persistent] internal Boolean DailyVersionCheck = true;

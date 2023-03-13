@@ -441,35 +441,49 @@ namespace TransferWindowPlanner
             //GUILayout.Label("Phase Angle:", Styles.styleTextDetailsLabel);
 
             //Action Buttons
-            if (KACWrapper.APIReady)
+            if (KACWrapper.APIReady && !settings.ForceUseStockAlarmClock)
             {
                 if (GUI.Button(new Rect(10, WindowRect.height - 30, 132, 20), new GUIContent("  Add KAC Alarm", Resources.btnKAC)))
                 {
-                    String tmpID = KACWrapper.KAC.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.TransferModelled,
+                    String tmpID = KACWrapper.KAC.CreateAlarm(
+                        KACWrapper.KACAPI.AlarmTypeEnum.TransferModelled,
                         String.Format("{0} -> {1}", mbTWP.windowMain.TransferSelected.Origin.bodyName, mbTWP.windowMain.TransferSelected.Destination.bodyName),
-                        (mbTWP.windowMain.TransferSelected.DepartureTime - settings.KACMargin * 60 * 60));
+                        (mbTWP.windowMain.TransferSelected.DepartureTime - settings.AlarmMargin * 60 * 60));
 
 
                     KACWrapper.KACAPI.KACAlarm alarmNew = KACWrapper.KAC.Alarms.First(a => a.ID == tmpID);
                     alarmNew.Notes = mbTWP.windowMain.GenerateTransferDetailsText();
-                    alarmNew.AlarmMargin = settings.KACMargin * 60 * 60;
+                    alarmNew.AlarmMargin = settings.AlarmMargin * 60 * 60;
                     alarmNew.AlarmAction = settings.KACAlarmAction;
                     alarmNew.XferOriginBodyName = mbTWP.windowMain.TransferSelected.Origin.bodyName;
                     alarmNew.XferTargetBodyName = mbTWP.windowMain.TransferSelected.Destination.bodyName;
-
                 }
 
-                if (GUI.Button(new Rect(132 + 15, WindowRect.height - 30, 120, 20), new GUIContent("  Copy Details", Resources.btnCopy)))
-                {
-                    CopyAllDetailsToClipboard();
-                }
             }
             else
             {
-                if (GUI.Button(new Rect(10, WindowRect.height - 30, 250, 20), new GUIContent("  Copy Transfer Details", Resources.btnCopy)))
+                if (GUI.Button(new Rect(10, WindowRect.height - 30, 132, 20), new GUIContent("  Add Alarm", Resources.btnKAC)))
                 {
-                    CopyAllDetailsToClipboard();
+                    AlarmTypeRaw alarm = new AlarmTypeRaw
+                    {
+                        title = String.Format("<color=yellow>{0}</color>@{2:0} km -> <color=yellow>{1}</color>@{3:0} km",
+                                              TransferSelected.Origin.displayName.LocalizeRemoveGender(),
+                                              TransferSelected.Destination.displayName.LocalizeRemoveGender(),
+                                              TransferSpecs.InitialOrbitAltitude / 1e3,
+                                              TransferSpecs.FinalOrbitAltitude / 1e3),
+                        description = GenerateTransferDetailsText().Replace("\n", "<br>"),
+                        ut = TransferSelected.DepartureTime - settings.AlarmMargin * 60 * 60,
+                        eventOffset = settings.AlarmMargin * 60 * 60,
+                        iconURL = "xfer",
+                        actions = {warp = AlarmActions.WarpEnum.KillWarp},
+                    };
+                    AlarmClockScenario.AddAlarm(alarm);
                 }
+            }
+
+            if (GUI.Button(new Rect(132 + 15, WindowRect.height - 30, 120, 20), new GUIContent("  Copy Details", Resources.btnCopy)))
+            {
+                CopyAllDetailsToClipboard();
             }
             
             

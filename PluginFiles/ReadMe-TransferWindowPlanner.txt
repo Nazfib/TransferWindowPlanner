@@ -27,6 +27,11 @@ LICENSE
 This work is licensed under an MIT license as outlined at the OSI site. Visit the documentation site for more details and Attribution
 
 VERSION HISTORY
+Version 1.9.1.0     -   KSP Version: 1.12.3
+- [Nazfib] Add stock alarm clock integration
+- [Nazfib] Update forum thread URLs
+- [Nazfib] Increase minimum version compatibility to 1.12
+
 Version 1.9.0.1     -   KSP Version: 1.12.3
 - [Nazfib] Recompile against KSP 1.12.3
 - [Nazfib] Loosen the .version compatibility bounds to allow 1.10 to 1.12

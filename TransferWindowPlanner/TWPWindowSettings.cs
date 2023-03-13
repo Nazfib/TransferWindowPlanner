@@ -204,7 +204,7 @@ namespace TransferWindowPlanner
                 if (settings.ButtonStyleChosen == Settings.ButtonStyleEnum.Toolbar)
                 {
                     if (GUILayout.Button(new GUIContent("Not Installed. Click for Toolbar Info", "Click to open your browser and find out more about the Common Toolbar"), Styles.styleTextCenterGreen))
-                        Application.OpenURL("http://forum.kerbalspaceprogram.com/threads/60863");
+                        Application.OpenURL("https://forum.kerbalspaceprogram.com/index.php?/topic/161857--");
                     //intBlizzyToolbarMissingHeight = 18;
                 }
                 //if (DrawToggle(ref settings.UseBlizzyToolbarIfAvailable, new GUIContent("Use Common Toolbar", "Choose to use the Common  Toolbar or the native KSP ARP button"), Styles.styleToggle))
@@ -250,51 +250,50 @@ namespace TransferWindowPlanner
 
         private void DrawWindow_Alarm()
         {
-            GUILayout.Label("Kerbal Alarm Clock Options", Styles.styleTextHeading);
+            GUILayout.BeginVertical(Styles.styleSettingsArea);
+            GUILayout.Label("Alarm Clock Options", Styles.styleTextHeading);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Margin", Styles.styleText,GUILayout.Width(85));
+            if (DrawTextBox(ref settings.AlarmMargin))
+                settings.Save();
+            GUILayout.Label("(hours)", Styles.styleTextYellow, GUILayout.Width(50));
+            GUILayout.EndHorizontal();
 
             if (!TWP_KACWrapper.KACWrapper.AssemblyExists)
             {
-                //draw something with a link for the KAC
-                if (GUILayout.Button(new GUIContent("Not Installed. Click for Alarm Clock Info", "Click to open your browser and find out more about the Kerbal Alarm Clock"), Styles.styleTextCenterGreen))
-                    Application.OpenURL("http://forum.kerbalspaceprogram.com/threads/24786");
-
-            }
-            else if (TWP_KACWrapper.KACWrapper.NeedUpgrade)
-            {
-                if (GUILayout.Button(new GUIContent("You need a newer version of KAC", "Click to open your browser and download a newer Kerbal Alarm Clock"), Styles.styleTextCenterGreen))
-                    Application.OpenURL("http://forum.kerbalspaceprogram.com/threads/24786");
-
-            }
-            else if (!TWP_KACWrapper.KACWrapper.InstanceExists)
-            {
-                GUILayout.Label("KAC is not loaded in this scene, so we can't configure", Styles.styleTextGreen);
-                GUILayout.Label("the integration options", Styles.styleTextGreen);
-                GUILayout.Space(10);
-                GUILayout.Label("You can access these in scenes where KAC is visible", Styles.styleTextGreen);
-                GUILayout.Space(10);
-                GUILayout.Label("Go on... Move along... Nothing to see...", Styles.styleTextGreen);
-
+                GUILayout.Label("KAC is not installed, using the stock alarm clock app");
             }
             else
             {
-                //Alarm Area
-                GUILayout.BeginVertical(Styles.styleSettingsArea);
-                //if (KACWrapper.KAC.DrawAlarmActionChoice(ref KACAlarmAction, "On Alarm:", 108, 61))
-                if (KACWrapper.KAC.DrawAlarmActionChoice(ref settings.KACAlarmAction, "Action:", 90 , 38))
+                if (DrawToggle(ref settings.ForceUseStockAlarmClock, "Use stock alarm clock", Styles.styleToggle))
+                    settings.Save();
+
+                if (settings.ForceUseStockAlarmClock)
                 {
-                    settings.Save();
+                    // Nothing further to configure.
                 }
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Margin", Styles.styleText,GUILayout.Width(85));
-                if (DrawTextBox(ref settings.KACMargin))
-                    settings.Save();
-                GUILayout.Label("(hours)", Styles.styleTextYellow, GUILayout.Width(50));
-
-                GUILayout.EndHorizontal();
-
-                GUILayout.EndVertical();
+                else if (TWP_KACWrapper.KACWrapper.NeedUpgrade)
+                {
+                    if (GUILayout.Button(new GUIContent("You need a newer version of KAC", "Click to open your browser and download a newer Kerbal Alarm Clock"), Styles.styleTextCenterGreen))
+                        Application.OpenURL("https://forum.kerbalspaceprogram.com/index.php?/topic/22809--");
+                }
+                else if (!TWP_KACWrapper.KACWrapper.InstanceExists)
+                {
+                    GUILayout.Label("KAC is not loaded in this scene, so we can't configure", Styles.styleTextGreen);
+                    GUILayout.Label("the integration options", Styles.styleTextGreen);
+                    GUILayout.Space(10);
+                    GUILayout.Label("You can access these in scenes where KAC is visible", Styles.styleTextGreen);
+                    GUILayout.Space(10);
+                    GUILayout.Label("Go on... Move along... Nothing to see...", Styles.styleTextGreen);
+                }
+                else
+                {
+                    if (KACWrapper.KAC.DrawAlarmActionChoice(ref settings.KACAlarmAction, "Action:", 90 , 38))
+                        settings.Save();
+                }
             }
+            GUILayout.EndVertical();
         }
 
         private void DrawWindow_Calendar()
