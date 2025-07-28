@@ -27,6 +27,9 @@ LICENSE
 This work is licensed under an MIT license as outlined at the OSI site. Visit the documentation site for more details and Attribution
 
 VERSION HISTORY
+Version 1.9.1.1     -   KSP Version: 1.12.5
+- [Nazfib] Update KAC wrapper
+
 Version 1.9.1.0     -   KSP Version: 1.12.3
 - [Nazfib] Add stock alarm clock integration
 - [Nazfib] Update forum thread URLs
